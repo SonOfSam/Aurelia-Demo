@@ -3,5 +3,5 @@
         .standardConfiguration()
         .developmentLogging();
     
-    aurelia.start().then(a => a.setRoot('app/app'));
+    aurelia.start().then(a => a.setRoot('app'));
 }

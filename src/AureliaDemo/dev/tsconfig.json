@@ -9,6 +9,6 @@
     "declarationFiles": false,
     "target": "es5",
     "outDir": "../wwwroot",
-    "module": "system"
+    "module": "commonjs"
   }
 }

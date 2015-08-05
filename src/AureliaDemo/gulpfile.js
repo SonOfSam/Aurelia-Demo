@@ -1,4 +1,5 @@
-﻿var gulp = require('gulp');
+﻿/// <binding />
+var gulp = require('gulp');
 var typescript = require('gulp-typescript');
 var plumber = require('gulp-plumber');
 var flatten = require('gulp-flatten');
@@ -9,20 +10,34 @@ var jspm = require('jspm');
 var shell = require('child-process-promise');
 var aurelia = require('aurelia-cli');
 var fs = require('fs');
+var clean = require('gulp-clean');
 
 var compilePath = 'wwwroot/';
 var devRoot = 'dev/';
+var appRoot = compilePath + 'app/';
 
+var jspmFilesExcludePath = '!' + devRoot + 'app/jspm_packages/**/*.*';
+var jspmPath = devRoot + 'app/jspm_packages/**/*.*';
+var jspmOutputPath = compilePath + 'app/jspm_packages';
+var jspmConfigFilePath = devRoot + 'app/config.js';
 var tsFilesPath = devRoot + '**/*.ts';
 var htmlFilesPath = devRoot + '**/*.html';
 var cssFilesPath = devRoot + '**/*.css';
 var devAll = devRoot + '**/*.*';
 var tsProjectPath = devRoot + 'tsconfig.json';
-var tsProject = typescript.createProject(tsProjectPath);
+var tsProject = typescript.createProject('dev/tsconfig.json');
 
 var onError = function (err) {
     console.log(err);
 }
+
+/**
+ * Removes all of the contents from the wwwroot directory.
+ */
+gulp.task('clean', function() {
+    gulp.src(compilePath + 'app/', { read: false })
+        .pipe(clean({force: true}));
+});
 
 gulp.task('compile-typescript', function () {
     tsProject.src()
@@ -34,8 +49,24 @@ gulp.task('compile-typescript', function () {
         .pipe(notify({ message: 'Compile typescript complete.' }));
 });
 
-gulp.task('process-html', function () {
-    gulp.src([htmlFilesPath])
+gulp.task('copy-jspm-config', function() {
+    gulp.src([jspmConfigFilePath])
+    .pipe(plumber({
+        errorHandler: onError
+    }))
+    .pipe(gulp.dest(appRoot));
+});
+
+gulp.task('copy-jspm-libs', function() {
+    gulp.src([jspmPath])
+    .pipe(plumber({
+        errorHandler: onError
+    }))
+    .pipe(gulp.dest(jspmOutputPath));
+});
+
+gulp.task('process-html', function () {    
+    gulp.src([htmlFilesPath, jspmFilesExcludePath])
         .pipe(plumber({
             errorHandler: onError
         }))
@@ -44,19 +75,12 @@ gulp.task('process-html', function () {
 });
 
 gulp.task('process-css', function () {
-    gulp.src([cssFilesPath])
+    gulp.src([cssFilesPath, jspmFilesExcludePath])
         .pipe(plumber({
             errorHandler: onError
         }))
         .pipe(gulp.dest(compilePath))
         .pipe(notify({ message: 'Process css changes complete' }));
-});
-
-gulp.task('copy-aurelia-typings', function () {
-    gulp.src(['wwwroot/app/jspm_packages/github/aurelia/*/*.d.ts'])
-        .pipe(flatten())
-        .pipe(gulp.dest('dev/typings/aurelia/'))
-        .pipe(notify({ message: 'Copy d.ts files from Aurelia complete' }));
 });
 
 gulp.task('watch-ts', function () {
