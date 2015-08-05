@@ -1,0 +1,22 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="app/jspm_packages/github/twbs/bootstrap@3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="app/jspm_packages/npm/font-awesome@4.4.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="styles/styles.css">
+</head>
+<body aurelia-app="main">
+
+    <div class="splash">
+        <div class="message">Aurelia demo, welcome</div>
+        <i class="fa fa-spinner fa-spin"></i>
+    </div>
+
+    <script src="app/jspm_packages/system.js"></script>
+    <script src="app/config.js"></script>
+    <script>
+        System.import("aurelia-bootstrapper").catch(console.error.bind(console));
+    </script>
+
+</body>
+</html>
