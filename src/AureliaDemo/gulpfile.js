@@ -7,14 +7,18 @@ var browserSync = require('browser-sync').create();
 var exec = require('child_process').exec;
 var jspm = require('jspm');
 var shell = require('child-process-promise');
-var tsProject = typescript.createProject('dev/tsconfig.json');
 var aurelia = require('aurelia-cli');
 var fs = require('fs');
 
 var compilePath = 'wwwroot/';
-var tsPath = 'dev/**/*.ts';
-var htmlPath = 'dev/**/*.html';
-var devAll = 'dev/**/*.*';
+var devRoot = 'dev/';
+
+var tsFilesPath = devRoot + '**/*.ts';
+var htmlFilesPath = devRoot + '**/*.html';
+var cssFilesPath = devRoot + '**/*.css';
+var devAll = devRoot + '**/*.*';
+var tsProjectPath = devRoot + 'tsconfig.json';
+var tsProject = typescript.createProject(tsProjectPath);
 
 var onError = function (err) {
     console.log(err);
@@ -31,12 +35,21 @@ gulp.task('compile-typescript', function () {
 });
 
 gulp.task('process-html', function () {
-    gulp.src([htmlPath])
+    gulp.src([htmlFilesPath])
         .pipe(plumber({
             errorHandler: onError
         }))
         .pipe(gulp.dest(compilePath))
         .pipe(notify({ message: 'Process html changes complete' }));
+});
+
+gulp.task('process-css', function () {
+    gulp.src([cssFilesPath])
+        .pipe(plumber({
+            errorHandler: onError
+        }))
+        .pipe(gulp.dest(compilePath))
+        .pipe(notify({ message: 'Process css changes complete' }));
 });
 
 gulp.task('copy-aurelia-typings', function () {
@@ -47,18 +60,18 @@ gulp.task('copy-aurelia-typings', function () {
 });
 
 gulp.task('watch-ts', function () {
-    return gulp.watch([tsPath], ['compile-typescript']);
+    return gulp.watch([tsFilesPath], ['compile-typescript']);
 });
 
 gulp.task('watch-html', function () {
-    return gulp.watch([htmlPath], ['process-html']);
+    return gulp.watch([htmlFilesPath], ['process-html']);
 });
 
 gulp.task('watch', function () {
 
-    gulp.watch([tsPath], ['compile-typescript']);
+    gulp.watch([tsFilesPath], ['compile-typescript']);
 
-    gulp.watch([htmlPath], ['process-html']);
+    gulp.watch([htmlFilesPath], ['process-html']);
 
     //browserSync.init({
     //    proxy: 'http://localhost:35718/'
