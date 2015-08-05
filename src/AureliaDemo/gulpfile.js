@@ -4,7 +4,12 @@ var plumber = require('gulp-plumber');
 var flatten = require('gulp-flatten');
 var notify = require('gulp-notify');
 var browserSync = require('browser-sync').create();
+var exec = require('child_process').exec;
+var jspm = require('jspm');
+var shell = require('child-process-promise');
 var tsProject = typescript.createProject('dev/tsconfig.json');
+var aurelia = require('aurelia-cli');
+var fs = require('fs');
 
 var compilePath = 'wwwroot/';
 var tsPath = 'dev/**/*.ts';
@@ -64,3 +69,74 @@ gulp.task('watch', function () {
     //});
 });
 
+gulp.task('task', function(cb) {
+    exec('ping localhost', function(err, stdout, stderr) {
+        console.log(stdout);
+        console.log(stderr);
+        cb(err);
+    });
+});
+
+/**
+ * Bundle aurelia-framework into one file
+ */
+gulp.task('bundle', function (done) {
+
+    var distFile = 'aurelia.js';
+    var outputFile = compilePath + distFile;
+
+    var cmd = [        
+      'aurelia-bootstrapper',      
+      'aurelia-http-client',
+      'core-js',
+      'github:aurelia/dependency-injection@0.9.1',
+      'github:aurelia/framework@0.13.4',
+      'github:aurelia/router@0.10.3',      
+
+      'github:aurelia/metadata@0.7.1',
+      'github:aurelia/task-queue@0.6.1',
+      'github:aurelia/event-aggregator@0.6.2',
+      'github:aurelia/templating@0.13.15',
+      'github:aurelia/history@0.6.1',
+      'github:aurelia/history-browser@0.6.2',      
+      'github:aurelia/templating-router@0.14.1',
+      'github:aurelia/templating-resources@0.13.3',
+      'github:aurelia/templating-binding@0.13.2',
+      'github:aurelia/binding@0.8.4',
+      'github:aurelia/loader-default@0.9.1'      
+
+    ].join(' + ');
+
+    jspm.bundle(cmd, distFile, { inject: true, minify: true }).then(function () {
+        fs.rename(distFile, outputFile, function () {            
+            done();
+        });
+    });
+
+});
+
+/**
+ * Bundle application and vendor files.
+ */
+gulp.task('bundle-app', function (done) {
+
+    var distFile = 'app-bundle.js';
+    var outputFile = paths.output + distFile;
+
+    if (fs.existsSync(outputFile)) fs.unlinkSync(outputFile);
+
+    var cmd = "**/* - aurelia";
+    jspm.bundle(cmd, distFile, { inject: true, minify: true }).then(function () {
+        fs.rename(distFile, outputFile, function () {            
+            done();
+        });
+    });
+
+});
+
+/**
+ * unbundle the aurelia-framework and use separate files again
+ */
+gulp.task('unbundle', function () {
+    return shell.exec('jspm unbundle');
+});
