@@ -48,7 +48,30 @@ To run the app, follow these steps.
   >This will copy the html files to the correct directory in the wwwroot folder
 8. You should now be able to run the project.
 
+##Authentication
 
+We have implemented Identity Server V3 from [Thinktecture](https://identityserver.github.io/Documentation/) and configured it with in memory stores,
+which can easily be substituted for real world scenarios.
+
+To create get a authentication token, one must post to the token endpoint which in the demo code resides at: http://localhost:35718/core/connect/token
+You will need two headers in the post.
+1. Content-Type: application/x-www-form-urlencoded
+2. Authorization : Basic xyz123 
+
+Basic xyz123 should be subsituted for the result of the following code or likewise operation in the language of your choice:
+```
+            var encoding = Encoding.UTF8;
+            var credentials = $"{"IdentityWebUI"}:{"secret"}";
+
+            var headerValue = Convert.ToBase64String(encoding.GetBytes(credentials));
+
+            $"{"Basic"} {headerValue}";
+```
+
+In the post body the following can be placed.
+grant_type=password&username=alice&password=alice@scope=openid
+
+More to follow soon.
 
 
 
