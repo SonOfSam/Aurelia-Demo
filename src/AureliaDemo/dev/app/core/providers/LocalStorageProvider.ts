@@ -10,7 +10,7 @@ export class LocalStorageProvider {
         this.applicationSettings = appSettings;
     }
 
-    get(key : string) {
+    get(key : string) : any {
         switch (this.applicationSettings.localStorageMode) {
             case StorageTypes.LocalStorageTypes.Local:
                 {
@@ -18,7 +18,7 @@ export class LocalStorageProvider {
                         return localStorage.getItem(key);
                     } else {
                         console.warn('Warning: Local Storage is disabled or unavailable');
-                        return undefined;
+                        return null;
                     }
                 }
             case StorageTypes.LocalStorageTypes.Session:
@@ -27,69 +27,63 @@ export class LocalStorageProvider {
                         return sessionStorage.getItem(key);
                     } else {
                         console.warn('Warning: Session Storage is disabled or unavailable.  will not work correctly.');
-                        return undefined;
+                        return null;
                     }
                 }
                 default:
                 {
                     console.warn('Warning: The configured local storage value is not valid, please check application settings.');
-                    return undefined;
+                    return null;
                 }
         }
     }
 
-    set(key : string, value : any) {
+    set(key : string, value : any) : void {
         switch (this.applicationSettings.localStorageMode) {
             case StorageTypes.LocalStorageTypes.Local:
                 {
                     if ('localStorage' in window && window['localStorage'] !== null) {
-                        return localStorage.setItem(key, value);
+                        localStorage.setItem(key, value);
                     } else {
-                        console.warn('Warning: Local Storage is disabled or unavailable');
-                        return undefined;
+                        console.warn('Warning: Local Storage is disabled or unavailable');                        
                     }
                 }
             case StorageTypes.LocalStorageTypes.Session:
                 {
                     if ('sessionStorage' in window && window['sessionStorage'] !== null) {
-                        return sessionStorage.setItem(key, value);
+                        sessionStorage.setItem(key, value);
                     } else {
-                        console.warn('Warning: Session Storage is disabled or unavailable.  will not work correctly.');
-                        return undefined;
+                        console.warn('Warning: Session Storage is disabled or unavailable.  will not work correctly.');                        
                     }
                 }
             default:
                 {
-                    console.warn('Warning: The configured local storage value is not valid, please check application settings.');
-                    return undefined;
+                    console.warn('Warning: The configured local storage value is not valid, please check application settings.');                    
                 }
         }
     }
 
-    remove(key : string) {
+    remove(key : string) : void {
         switch (this.applicationSettings.localStorageMode) {
             case StorageTypes.LocalStorageTypes.Local:
                 {
                     if ('localStorage' in window && window['localStorage'] !== null) {
-                        return localStorage.removeItem(key);
+                        localStorage.removeItem(key);
                     } else {
-                        console.warn('Warning: Local Storage is disabled or unavailable');
-                        return undefined;
+                        console.warn('Warning: Local Storage is disabled or unavailable');                        
                     }
                 }
             case StorageTypes.LocalStorageTypes.Session:
                 {
                     if ('sessionStorage' in window && window['sessionStorage'] !== null) {
-                        return sessionStorage.removeItem(key);
+                        sessionStorage.removeItem(key);
                     } else {
-                        console.warn('Warning: Session Storage is disabled or unavailable.  will not work correctly.');
-                        return undefined;
+                        console.warn('Warning: Session Storage is disabled or unavailable.  will not work correctly.');                        
                     }
                 }
             default:
                 {
-                    console.warn('Warning: The configured local storage value is not valid, please check application settings.');
-                    return undefined;
+                    console.warn('Warning: The configured local storage value is not valid, please check application settings.');                    
                 }
         }
     }
