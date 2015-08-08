@@ -70,8 +70,7 @@ gulp.task('process-html', function () {
         .pipe(plumber({
             errorHandler: onError
         }))
-        .pipe(gulp.dest(compilePath))
-        .pipe(notify({ message: 'Process html changes complete' }));
+        .pipe(gulp.dest(compilePath));
 });
 
 gulp.task('process-css', function () {
