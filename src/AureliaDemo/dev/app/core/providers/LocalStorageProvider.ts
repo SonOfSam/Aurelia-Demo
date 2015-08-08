@@ -1,6 +1,6 @@
-﻿import {inject} from 'aurelia-framework';
+﻿import { inject } from 'aurelia-framework';
 import { ApplicationSettings } from 'settings/ApplicationSettings'
-import StorageTypes = require("../enumerations/LocalStorageTypes");
+import { LocalStorageTypes } from 'enumerations/LocalStorageTypes';
 
 @inject(ApplicationSettings)
 export class LocalStorageProvider {
@@ -12,7 +12,7 @@ export class LocalStorageProvider {
 
     get(key : string) : any {
         switch (this.applicationSettings.localStorageMode) {
-            case StorageTypes.LocalStorageTypes.Local:
+            case LocalStorageTypes.Local:
                 {
                     if ('localStorage' in window && window['localStorage'] !== null) {
                         return localStorage.getItem(key);
@@ -21,7 +21,7 @@ export class LocalStorageProvider {
                         return null;
                     }
                 }
-            case StorageTypes.LocalStorageTypes.Session:
+            case LocalStorageTypes.Session:
                 {
                     if ('sessionStorage' in window && window['sessionStorage'] !== null) {
                         return sessionStorage.getItem(key);
@@ -40,7 +40,7 @@ export class LocalStorageProvider {
 
     set(key : string, value : any) : void {
         switch (this.applicationSettings.localStorageMode) {
-            case StorageTypes.LocalStorageTypes.Local:
+            case LocalStorageTypes.Local:
                 {
                     if ('localStorage' in window && window['localStorage'] !== null) {
                         localStorage.setItem(key, value);
@@ -48,7 +48,7 @@ export class LocalStorageProvider {
                         console.warn('Warning: Local Storage is disabled or unavailable');                        
                     }
                 }
-            case StorageTypes.LocalStorageTypes.Session:
+            case LocalStorageTypes.Session:
                 {
                     if ('sessionStorage' in window && window['sessionStorage'] !== null) {
                         sessionStorage.setItem(key, value);
@@ -65,7 +65,7 @@ export class LocalStorageProvider {
 
     remove(key : string) : void {
         switch (this.applicationSettings.localStorageMode) {
-            case StorageTypes.LocalStorageTypes.Local:
+            case LocalStorageTypes.Local:
                 {
                     if ('localStorage' in window && window['localStorage'] !== null) {
                         localStorage.removeItem(key);
@@ -73,7 +73,7 @@ export class LocalStorageProvider {
                         console.warn('Warning: Local Storage is disabled or unavailable');                        
                     }
                 }
-            case StorageTypes.LocalStorageTypes.Session:
+            case LocalStorageTypes.Session:
                 {
                     if ('sessionStorage' in window && window['sessionStorage'] !== null) {
                         sessionStorage.removeItem(key);
