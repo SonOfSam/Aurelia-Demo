@@ -1,8 +1,8 @@
 ﻿import { inject } from 'aurelia-framework'
-import { ApplicationSettings } from 'core/settings/ApplicationSettings'
-import * as Enumerations from '../Enumerations/';
-import { OAuthService, OpenIdService } from '../Services/';
-import { LocalStorageProvider } from 'LocalStorageProvider';
+import { ApplicationSettings } from 'core/CoreSettings'
+import * as Enumerations from 'core/CoreEnumerations';
+import { OAuthService, OpenIdService } from 'core/CoreServices';
+import { LocalStorageProvider } from 'core/CoreProviders';
 
 export class LoginResult {
     success: boolean = false;

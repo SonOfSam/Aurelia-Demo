@@ -1,6 +1,6 @@
 ﻿import { inject } from 'aurelia-framework';
-import { ApplicationSettings } from 'settings/ApplicationSettings'
-import { LocalStorageTypes } from 'enumerations/LocalStorageTypes';
+import { ApplicationSettings } from 'core/CoreSettings'
+import { LocalStorageTypes } from 'core/CoreEnumerations';
 
 @inject(ApplicationSettings)
 export class LocalStorageProvider {

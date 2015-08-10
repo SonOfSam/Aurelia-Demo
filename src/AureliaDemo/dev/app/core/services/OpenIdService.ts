@@ -1,5 +1,5 @@
 ﻿import { inject } from 'aurelia-framework'
-import { ApplicationSettings } from 'core/settings/ApplicationSettings'
+import { ApplicationSettings } from 'core/CoreSettings'
 import { HttpClient } from 'aurelia-http-client';
 import { Base64 } from 'core/helpers/Base64'
 

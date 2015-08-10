@@ -1,4 +1,4 @@
-﻿import * as Enumerations from '../Enumerations/';
+﻿import * as Enumerations from 'core/CoreEnumerations';
 
 export class ApplicationSettings {    
     localStorageMode: Enumerations.LocalStorageTypes = Enumerations.LocalStorageTypes.Local;
