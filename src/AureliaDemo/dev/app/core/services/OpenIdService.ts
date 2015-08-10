@@ -18,16 +18,8 @@ export class OpenIdService {
     }
 
     getServerConfiguration() {
-        if (this.applicationSettings.isInDebugMode) {
-            console.log("OpenIdService => this.getServerConfiguration => Request Start");
-        }
-
         var url = `${this.applicationSettings.baseUrl}${this.configEndpoint}`;
         return this.httpClient.get(url).then(responseResult => {
-            if (this.applicationSettings.isInDebugMode) {
-                console.log("OpenIdService => this.getServerConfiguration => Request End");
-            }
-
             this.serverConfiguration = JSON.parse(responseResult.response);
         });
     }
@@ -35,10 +27,6 @@ export class OpenIdService {
     requestAccessToken(userName: string, password: string): Promise<AccessTokenRequestResult> {
         var loginResult = new AccessTokenRequestResult();
         var promise: Promise<AccessTokenRequestResult> = null;
-
-        if (this.applicationSettings.isInDebugMode) {
-            console.log("OpenIdService => this.serverConfiguration: ", this.serverConfiguration);
-        }
 
         if (this.serverConfiguration === null) {
             promise = new Promise<AccessTokenRequestResult>((resolve, reject) => {
@@ -52,10 +40,6 @@ export class OpenIdService {
             });
 
             return promise;
-        }
-
-        if (this.applicationSettings.isInDebugMode) {
-            console.log("OpenIdService => this.requestAccessToken => Proceeding to call token endpoint");
         }
 
         var credentials = `${this.applicationSettings.clientId}:${this.applicationSettings.clientSecret}`;
@@ -76,10 +60,21 @@ export class OpenIdService {
                 .withContent(bodyContent)
                 .send()
                 .then(response => {
-                    loginResult.success = true;
-                    resolve(loginResult);
+                    if (response.isSuccess) {                        
+                        var loginResponse = JSON.parse(response.response);
+                        loginResult.token = loginResponse.access_token;
+                        loginResult.success = true;
+                        resolve(loginResult);
+                    } else {                        
+                        var errorResponse = JSON.parse(response.response);
+                        loginResult.success = false;
+                        loginResult.errorText = errorResponse;
+                        resolve(loginResult);
+                    }
                 }).catch(error => {
+                    var errorResponse = JSON.parse(error.response);
                     loginResult.success = false;
+                    loginResult.errorText = errorResponse.error;
                     reject(loginResult);
                 });
         });

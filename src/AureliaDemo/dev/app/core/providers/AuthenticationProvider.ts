@@ -27,13 +27,14 @@ export class AuthenticationProvider {
                 {
                     promise = new Promise<LoginResult>((resolve, reject) => {
                         this.openIdService.requestAccessToken(username, password).then(result => {
-                            if (result.success) {
-                                loginResult.success = true;
-                                resolve(loginResult);
-                            } else {
-                                loginResult.success = false;
-                                reject(loginResult);
-                            }
+                            loginResult.success = result.success;
+                            loginResult.errorText = result.errorText;
+                            //TODO: Save token here, if success
+                            resolve(loginResult); 
+                        }).catch(error => {                            
+                            loginResult.success = false;
+                            loginResult.errorText = error.errorText;
+                            reject(loginResult);
                         });
                     });
                     break;

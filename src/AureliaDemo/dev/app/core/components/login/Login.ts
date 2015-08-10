@@ -14,6 +14,8 @@ export class Login {
     login() {
         this.authenticationProvider.login(this.username, this.password).then(result => {
             console.log('loginResult', result);
+        }).catch(error => {
+            console.log('loginResult Error', error);
         });
     }
 }
