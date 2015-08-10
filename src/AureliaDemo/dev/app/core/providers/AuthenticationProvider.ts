@@ -10,6 +10,7 @@ export class AuthenticationProvider {
     localStorageProvider: LocalStorageProvider = null;
     oAuthService: OAuthService = null;
     openIdService: OpenIdService = null;
+    isAuthenticated: boolean = false;
 
     constructor(appSettings: ApplicationSettings, localStorageProvider: LocalStorageProvider, oAuthService: OAuthService, openIdService: OpenIdService) {
         this.applicationSettings = appSettings;
@@ -29,7 +30,10 @@ export class AuthenticationProvider {
                         this.openIdService.requestAccessToken(username, password).then(result => {
                             loginResult.success = result.success;
                             loginResult.errorText = result.errorText;
-                            //TODO: Save token here, if success
+                            this.isAuthenticated = loginResult.success;
+                            if (loginResult.success) {                                
+                                //TODO: Save token here
+                            }                            
                             resolve(loginResult); 
                         }).catch(error => {                            
                             loginResult.success = false;
@@ -61,8 +65,13 @@ export class AuthenticationProvider {
         return promise;
     }
 
+    isAuth(): boolean {
+        return this.isAuthenticated;
+    }
+
     logout(): void {
         this.clearToken();
+        this.isAuthenticated = false;
     }
 
     setToken(token: string): void {
