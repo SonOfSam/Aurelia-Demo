@@ -2,7 +2,7 @@
 import { ApplicationSettings } from 'core/CoreSettings';
 import * as Enumerations from 'core/CoreEnumerations';
 import { OAuthService, OpenIdService } from 'core/CoreServices';
-import { LocalStorageProvider } from 'core/CoreProviders';
+import { LocalStorageProvider } from 'core/providers/LocalStorageProvider';
 
 @inject(ApplicationSettings, LocalStorageProvider, OAuthService, OpenIdService)
 export class AuthenticationProvider {
