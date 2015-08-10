@@ -24,14 +24,14 @@ export class OpenIdService {
         });
     }
 
-    requestAccessToken(userName: string, password: string) : string{        
+    requestAccessToken(userName: string, password: string) {        
         if (this.applicationSettings.isInDebugMode) {
             console.log("OpenIdService => this.serverConfiguration: ", this.serverConfiguration);
         }
 
         if (this.serverConfiguration === null) {
             this.getServerConfiguration().then(something => {
-                this.requestAccessToken(userName, password);
+                return this.requestAccessToken(userName, password);
             });            
         }
 
