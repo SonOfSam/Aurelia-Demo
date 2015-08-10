@@ -1,2 +1,2 @@
-﻿export * from "services/OAuthService"
-export * from "services/OpenIdService"
+﻿export * from "core/services/OAuthService"
+export * from "core/services/OpenIdService"

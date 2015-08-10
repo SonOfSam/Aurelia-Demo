@@ -4,14 +4,18 @@ import { RequestMessage } from 'aurelia-http-client';
 
 @inject(LocalStorageProvider)
 export class AuthenticationInterceptor {
-    localStorageProvider: LocalStorageProvider;
-
+    localStorageProvider: LocalStorageProvider;    
+    
     constructor(localStorageProvider: LocalStorageProvider) {
-        this.localStorageProvider = localStorageProvider;
+        this.localStorageProvider = localStorageProvider;        
     }
 
-    request(message: RequestMessage) {
-        
+    request(message) {
+        var token = this.localStorageProvider.get("AuthenticationToken");
+        var headerValue = `Basic ${token}`;
+        message.headers.add("Authorization", headerValue);
+
+        return message;
     }
 
     requestError(error) {

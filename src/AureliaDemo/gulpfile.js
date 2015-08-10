@@ -45,8 +45,7 @@ gulp.task('compile-typescript', function () {
             errorHandler: onError
         }))
         .pipe(typescript(tsProject))
-        .pipe(gulp.dest(compilePath))
-        .pipe(notify({ message: 'Compile typescript complete.' }));
+        .pipe(gulp.dest(compilePath));
 });
 
 gulp.task('copy-jspm-config', function() {
