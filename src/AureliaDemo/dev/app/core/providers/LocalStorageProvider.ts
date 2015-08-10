@@ -1,5 +1,5 @@
 ﻿import { inject } from 'aurelia-framework';
-import { ApplicationSettings } from 'core/CoreSettings'
+import { ApplicationSettings } from 'core/CoreSettings';
 import { LocalStorageTypes } from 'core/CoreEnumerations';
 
 @inject(ApplicationSettings)

@@ -1,14 +1,15 @@
-﻿import { inject } from 'aurelia-framework'
-import { AuthenticationProvider } from 'core/CoreProviders'
+﻿import { inject } from 'aurelia-framework';
+import { AuthenticationProvider } from 'core/CoreProviders';
 
 @inject(AuthenticationProvider)
 export class Login {
     authenticationProvider: AuthenticationProvider = null;
     username = '';
     password = '';
-
+    
     constructor(authenticationProvider: AuthenticationProvider) {
         this.authenticationProvider = authenticationProvider;
+        console.log(this.authenticationProvider);
     }
 
     login() {

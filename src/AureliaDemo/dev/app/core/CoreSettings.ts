@@ -1,1 +1,1 @@
-﻿export * from 'core/settings/ApplicationSettings'
+﻿export * from 'core/settings/ApplicationSettings';

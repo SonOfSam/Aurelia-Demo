@@ -1,2 +1,2 @@
-﻿export * from 'core/providers/AuthenticationProvider'
-export * from 'core/providers/LocalStorageProvider'
+﻿export * from 'core/providers/AuthenticationProvider';
+export * from 'core/providers/LocalStorageProvider';

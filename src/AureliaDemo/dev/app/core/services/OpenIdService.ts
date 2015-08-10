@@ -1,7 +1,7 @@
-﻿import { inject } from 'aurelia-framework'
-import { ApplicationSettings } from 'core/CoreSettings'
+﻿import { inject } from 'aurelia-framework';
+import { ApplicationSettings } from 'core/CoreSettings';
 import { HttpClient } from 'aurelia-http-client';
-import { Base64 } from 'core/helpers/Base64'
+import { Base64 } from 'core/helpers/Base64';
 
 @inject(ApplicationSettings, HttpClient, Base64)
 export class OpenIdService {

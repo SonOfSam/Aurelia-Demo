@@ -1,13 +1,8 @@
-﻿import { inject } from 'aurelia-framework'
-import { ApplicationSettings } from 'core/CoreSettings'
+﻿import { inject } from 'aurelia-framework';
+import { ApplicationSettings } from 'core/CoreSettings';
 import * as Enumerations from 'core/CoreEnumerations';
 import { OAuthService, OpenIdService } from 'core/CoreServices';
 import { LocalStorageProvider } from 'core/CoreProviders';
-
-export class LoginResult {
-    success: boolean = false;
-    errorText: string = '';
-}
 
 @inject(ApplicationSettings, LocalStorageProvider, OAuthService, OpenIdService)
 export class AuthenticationProvider {
@@ -64,4 +59,9 @@ export class AuthenticationProvider {
     clearToken(): void {
         this.localStorageProvider.remove('authToken');
     }
+}
+
+export class LoginResult {
+    success: boolean = false;
+    errorText: string = '';
 }
