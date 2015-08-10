@@ -18,21 +18,44 @@ export class OpenIdService {
     }
 
     getServerConfiguration() {
+        if (this.applicationSettings.isInDebugMode) {
+            console.log("OpenIdService => this.getServerConfiguration => Request Start");
+        }
+
         var url = `${this.applicationSettings.baseUrl}${this.configEndpoint}`;
-        return this.httpClient.get(url).then(responseResult => {            
-            this.serverConfiguration = JSON.parse(responseResult.response);            
+        return this.httpClient.get(url).then(responseResult => {
+            if (this.applicationSettings.isInDebugMode) {
+                console.log("OpenIdService => this.getServerConfiguration => Request End");
+            }
+
+            this.serverConfiguration = JSON.parse(responseResult.response);
         });
     }
 
-    requestAccessToken(userName: string, password: string) {        
+    requestAccessToken(userName: string, password: string): Promise<AccessTokenRequestResult> {
+        var loginResult = new AccessTokenRequestResult();
+        var promise: Promise<AccessTokenRequestResult> = null;
+
         if (this.applicationSettings.isInDebugMode) {
             console.log("OpenIdService => this.serverConfiguration: ", this.serverConfiguration);
         }
 
         if (this.serverConfiguration === null) {
-            this.getServerConfiguration().then(something => {
-                return this.requestAccessToken(userName, password);
-            });            
+            promise = new Promise<AccessTokenRequestResult>((resolve, reject) => {
+                this.getServerConfiguration().then(something => {
+                    if (this.applicationSettings.isInDebugMode) {
+                        console.log("OpenIdService => this.requestAccessToken => Recursive");
+                    }
+
+                    resolve(this.requestAccessToken(userName, password));
+                });
+            });
+
+            return promise;
+        }
+
+        if (this.applicationSettings.isInDebugMode) {
+            console.log("OpenIdService => this.requestAccessToken => Proceeding to call token endpoint");
         }
 
         var credentials = `${this.applicationSettings.clientId}:${this.applicationSettings.clientSecret}`;
@@ -45,11 +68,28 @@ export class OpenIdService {
 
         var bodyContent = `${grantContent}${userNameContent}${passwordContent}${scopeContent}`;
 
-        return this.httpClient.createRequest(this.serverConfiguration.token_endpoint)
-            .withHeader('Authorization', credentialsHeaderValue)
-            .withHeader('Content-Type', 'application/x-www-form-urlencoded')
-            .asPost()
-            .withContent(bodyContent)
-            .send();
+        promise = new Promise<AccessTokenRequestResult>((resolve, reject) => {
+            this.httpClient.createRequest(this.serverConfiguration.token_endpoint)
+                .withHeader('Authorization', credentialsHeaderValue)
+                .withHeader('Content-Type', 'application/x-www-form-urlencoded')
+                .asPost()
+                .withContent(bodyContent)
+                .send()
+                .then(response => {
+                    loginResult.success = true;
+                    resolve(loginResult);
+                }).catch(error => {
+                    loginResult.success = false;
+                    reject(loginResult);
+                });
+        });
+
+        return promise;
     }
+}
+
+export class AccessTokenRequestResult {
+    success: boolean = false;
+    errorText: string = '';
+    token: string = null;
 }

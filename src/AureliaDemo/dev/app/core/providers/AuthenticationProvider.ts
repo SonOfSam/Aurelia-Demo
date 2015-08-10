@@ -18,19 +18,32 @@ export class AuthenticationProvider {
         this.openIdService = openIdService;
     }
 
-    login(username: string, password: string): LoginResult {
+    login(username: string, password: string): Promise<LoginResult> {
         var loginResult = new LoginResult();
+        var promise: Promise<LoginResult> = null;
 
         switch (this.applicationSettings.authenticationMode) {
             case Enumerations.AuthenticationTypes.OpenId:
                 {
-                    this.openIdService.requestAccessToken(username, password).then(result => {
-                        console.log('AuthenticationProvider => login => OpenId => requestAccessToken', result);
+                    promise = new Promise<LoginResult>((resolve, reject) => {
+                        this.openIdService.requestAccessToken(username, password).then(result => {
+                            if (result.success) {
+                                loginResult.success = true;
+                                resolve(loginResult);
+                            } else {
+                                loginResult.success = false;
+                                reject(loginResult);
+                            }
+                        });
                     });
                     break;
                 }
             case Enumerations.AuthenticationTypes.OAuth:
                 {
+                    loginResult.errorText = "Not yet implemented";
+                    promise = new Promise<LoginResult>((resolve) => {
+                        resolve(loginResult);
+                    });
                     break;
                 }
             default:
@@ -38,10 +51,13 @@ export class AuthenticationProvider {
                     var defaultErrorText = 'Warning: Authentication mode not supported. Check ApplicationSettings';
                     console.error(defaultErrorText);
                     loginResult.errorText = defaultErrorText;
+                    promise = new Promise<LoginResult>((resolve) => {
+                        resolve(loginResult);
+                    });
                 }
         }
 
-        return loginResult;
+        return promise;
     }
 
     logout(): void {

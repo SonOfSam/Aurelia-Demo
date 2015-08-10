@@ -6,14 +6,14 @@ export class Login {
     authenticationProvider: AuthenticationProvider = null;
     username = '';
     password = '';
-    
+
     constructor(authenticationProvider: AuthenticationProvider) {
         this.authenticationProvider = authenticationProvider;
-        console.log(this.authenticationProvider);
     }
 
     login() {
-        var loginResult = this.authenticationProvider.login(this.username, this.password);
-        console.log('loginResult', loginResult);
+        this.authenticationProvider.login(this.username, this.password).then(result => {
+            console.log('loginResult', result);
+        });
     }
 }
