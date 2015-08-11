@@ -4,10 +4,10 @@ import { RequestMessage } from 'aurelia-http-client';
 
 @inject(AuthenticationProvider)
 export class AuthenticationInterceptor {
-    authProvider: AuthenticationProvider;    
+    authProvider: AuthenticationProvider;
     
     constructor(localStorageProvider: AuthenticationProvider) {
-        this.authProvider = localStorageProvider;        
+        this.authProvider = localStorageProvider;
     }
 
     responseError(error) {

@@ -22,6 +22,7 @@ var jspmOutputPath = compilePath + 'app/jspm_packages';
 var jspmConfigFilePath = devRoot + 'app/config.js';
 var tsFilesPath = devRoot + '**/*.ts';
 var htmlFilesPath = devRoot + '**/*.html';
+var assetFilesPath = devRoot + '**/*.png';
 var cssFilesPath = devRoot + '**/*.css';
 var devAll = devRoot + '**/*.*';
 var tsProjectPath = devRoot + 'tsconfig.json';
@@ -64,8 +65,16 @@ gulp.task('copy-jspm-libs', function() {
     .pipe(gulp.dest(jspmOutputPath));
 });
 
-gulp.task('process-html', function () {    
+gulp.task('process-html', function () {
     gulp.src([htmlFilesPath, jspmFilesExcludePath])
+        .pipe(plumber({
+            errorHandler: onError
+        }))
+        .pipe(gulp.dest(compilePath));
+});
+
+gulp.task('process-assets', function () {
+    gulp.src([assetFilesPath, jspmFilesExcludePath])
         .pipe(plumber({
             errorHandler: onError
         }))

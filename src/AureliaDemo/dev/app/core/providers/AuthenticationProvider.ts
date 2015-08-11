@@ -31,8 +31,8 @@ export class AuthenticationProvider {
                             loginResult.success = result.success;
                             loginResult.errorText = result.errorText;
                             this.isAuthenticated = loginResult.success;
-                            if (loginResult.success) {                                
-                                //TODO: Save token here
+                            if (loginResult.success) {
+                                this.setToken(result.token);
                             }                            
                             resolve(loginResult); 
                         }).catch(error => {                            
