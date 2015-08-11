@@ -1,12 +1,10 @@
 ﻿import { inject } from 'aurelia-framework';
 import { HttpClientExtensions } from 'core/CoreHelpers'
-import Aureliarouter = require("aurelia-router");
-import RouterConfiguration = Aureliarouter.RouterConfiguration;
-import Router = Aureliarouter.Router;
+import { Router, RouterConfiguration } from 'aurelia-router';
 
 @inject(HttpClientExtensions)
 export class App {
-    router: Aureliarouter.Router;
+    router: Router;
     httpExtensions: HttpClientExtensions = null;
 
     constructor(httpExtensions: HttpClientExtensions) {

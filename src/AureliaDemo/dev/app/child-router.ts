@@ -1,10 +1,8 @@
-﻿import Aureliarouter = require("aurelia-router");
-import RouterConfiguration = Aureliarouter.RouterConfiguration;
-import Router = Aureliarouter.Router;
+﻿import { Router, RouterConfiguration } from 'aurelia-router';
 
 export class ChildRouter {
     heading = 'Child Router';
-    router: Aureliarouter.Router;
+    router: Router;
 
     configureRouter(config: RouterConfiguration, router: Router) {
         config.map([
