@@ -1,6 +1,7 @@
 ﻿import { inject } from 'aurelia-framework';
 import { RequestBuilder } from 'aurelia-http-client';
-import { AuthenticationProvider } from "core/CoreProviders"
+import { AuthenticationProvider } from 'core/CoreProviders'
+import { AuthenticationInterceptor } from 'core/CoreInterceptors'
 
 @inject(AuthenticationProvider)
 export class HttpClientExtensions {
@@ -16,7 +17,12 @@ export class HttpClientExtensions {
             return (client, processor, message) => {
                 let token = (internalAuth ? this.getToken() : this.getCustomToken(identifier));
 
-                message.headers.add('Authorization', token);
+                if (internalAuth) {
+                    message.interceptors = message.interceptors || [];
+                    message.interceptors.unshift(new AuthenticationInterceptor(this.authenticationProvider));
+                }
+
+                message.headers.add('Authorization', token);       
             };
         }
         RequestBuilder.addHelper('withToken', withToken);
