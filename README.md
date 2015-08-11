@@ -35,16 +35,17 @@ To run the app, follow these steps.
   ```shell
   jspm install -y
   ```
-  >**Note:** Make sure to run this command in the AureliaDemo folder where the project.json is located. Windows users, if you experience an error of "unknown command unzip" you can solve this problem by doing `npm install -g unzip` and then re-running `jspm install`.
-3. Run the 'copy-jspm-libs' task
+  >**Note:** Make sure to run this command in the `src/AureliaDemo` folder where the project.json is located. Windows users, if you experience an error of "unknown command unzip" you can solve this problem by doing `npm install -g unzip` and then re-running `jspm install`.
+3. Run `npm install` (this will install local gulp used by the next steps)
+3. Run `gulp copy-jspm-libs` (gulp task)
   >This will copy the files from where jspm install places the libraries, into the correct directory in the wwwroot folder.
-4. Run the 'copy-jspm-config' task
-  >This will copy the config.js file to the correct directory in the wwwroot folder
-5. Run the 'process-css' task
+4. Run `gulp copy-jspm-config` (gulp task)
+  >This will copy the `config.js` file to the correct directory in the wwwroot folder
+5. Run `gulp process-css` (gulp task)
   >This will copy the css files to the correct directory in the wwwroot folder
-6. Run the 'process-html' task
+6. Run `gulp process-html` (gulp task)
   >This will copy the html files to the correct directory in the wwwroot folder
-7. Run the 'compile-typescript' task
+7. Run `gulp compile-typescript` (gulp task)
   >This will copy the html files to the correct directory in the wwwroot folder
 8. You should now be able to run the project.
 
