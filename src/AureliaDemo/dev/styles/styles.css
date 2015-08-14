@@ -103,3 +103,39 @@ section {
         min-width: 50%;
         min-height: 50%;
     }
+
+.welcomeBox {
+    background: transparent url("../images/blackBackground.png") repeat scroll 0% 0%;
+    width: 900px;
+    margin: 5% auto 0;
+    padding: 20px 40px;
+}
+
+    .welcomeBox h2 {
+        color: white;
+        text-align: center;
+    }
+
+    .welcomeBox img {
+        width: 800px;
+        height: auto;
+        margin: 0 auto 5px;
+        display: block;
+    }
+
+.navbar-default {
+    background: rgba(255, 255, 255, 0.2) none repeat scroll 0 0;
+    border-color: transparent;
+}
+
+    .navbar-default .navbar-nav > .active {
+        color: #000;
+        background: rgba(255, 255, 255, 0.2);
+    }
+
+        .navbar-default .navbar-nav > .active > a,
+        .navbar-default .navbar-nav > .active > a:hover,
+        .navbar-default .navbar-nav > .active > a:focus {
+            color: #000;
+            background: rgba(255, 255, 255, 0.2);
+        }
