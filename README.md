@@ -51,7 +51,7 @@ To run the app, follow these steps.
 ##Authentication
 
 We have implemented Identity Server V3 from [Thinktecture](https://identityserver.github.io/Documentation/) and configured it with in memory stores,
-which can easily be substituted for real world scenarios.
+which can easily be substituted for real world scenarios. We have also added a user service, so that users are read from the Identity system.
 
 To create get a authentication token, one must post to the token endpoint which in the demo code resides at: http://localhost:35718/core/connect/token
 You will need two headers in the post.

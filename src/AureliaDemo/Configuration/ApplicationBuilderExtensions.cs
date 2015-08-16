@@ -1,9 +1,10 @@
 ﻿namespace AureliaDemo.Configuration
 {
-    using System;
-    using Thinktecture.IdentityServer.Core.Configuration;
+    using System;    
     using System.Threading.Tasks;
     using System.Collections.Generic;
+
+    using IdentityServer3.Core.Configuration;
 
     using Microsoft.AspNet.Builder;
 
