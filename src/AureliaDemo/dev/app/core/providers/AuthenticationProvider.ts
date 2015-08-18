@@ -107,6 +107,18 @@ export class AuthenticationProvider {
         return promise;
     }
 
+    refreshToken(): Promise<LoginResult> {
+        var promise = new Promise<LoginResult>((resolve, reject) => {
+            try {
+                reject("Not implemented yet");
+            } catch (error) {
+                reject(error);
+            }
+        });
+
+        return promise;
+    }
+
     setToken(token: string): void {
         this.localStorageProvider.set('authToken', token);
     }
