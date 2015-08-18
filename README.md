@@ -1,7 +1,10 @@
 # Aurelia-Demo
 Aurelia Demo using TypeScript via gulp
 
-> To keep up to date on [Aurelia](http://www.aurelia.io/), please visit and subscribe to [the official blog](http://blog.durandal.io/). Demo can be seen running on [Azure](http://aureliademo.azurewebsites.net/). Keep in mind that no bundling or any form of optimization has taken place before publishing to Azure, and it is also running in a shared and free instance and this will lead to slow load times.
+> The current feature set being developed is authentication. Please look at the branch called authentication_features.
+We are happy for the community to collaborate, so fork now and send in your pull request.
+
+> To keep up to date on [Aurelia](http://www.aurelia.io/), please visit and subscribe to [the official blog](http://blog.durandal.io/). Keep in mind that no bundling or any form of optimization has taken place before publishing to Azure, and it is also running in a shared and free instance and this will lead to slow load times.
 
 ### Project Details
 This project is still currently, work in progress. However it is still runs correctly provided you perform the correct steps.
