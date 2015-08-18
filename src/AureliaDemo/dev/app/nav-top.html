@@ -30,7 +30,7 @@
             </ul>
             <ul if.bind="isAuthenticated" class="nav navbar-nav navbar-right">
                 <li>
-                    <a href="/#/logout">
+                    <a click.delegate="logout()">
                         <i class="fa fa-sign-out"></i>
                         Logout
                     </a>

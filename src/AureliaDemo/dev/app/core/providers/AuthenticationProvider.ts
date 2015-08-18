@@ -3,20 +3,23 @@ import { ApplicationSettings } from 'core/CoreSettings';
 import * as Enumerations from 'core/CoreEnumerations';
 import { OAuthService, OpenIdService } from 'core/CoreServices';
 import { LocalStorageProvider } from 'core/providers/LocalStorageProvider';
+import {EventAggregator} from 'aurelia-event-aggregator';
 
-@inject(ApplicationSettings, LocalStorageProvider, OAuthService, OpenIdService)
+@inject(ApplicationSettings, LocalStorageProvider, OAuthService, OpenIdService, EventAggregator)
 export class AuthenticationProvider {
     applicationSettings: ApplicationSettings = null;
     localStorageProvider: LocalStorageProvider = null;
     oAuthService: OAuthService = null;
     openIdService: OpenIdService = null;
     isAuthenticated: boolean = false;
+    eventAggregator: EventAggregator = null;
 
-    constructor(appSettings: ApplicationSettings, localStorageProvider: LocalStorageProvider, oAuthService: OAuthService, openIdService: OpenIdService) {
+    constructor(appSettings: ApplicationSettings, localStorageProvider: LocalStorageProvider, oAuthService: OAuthService, openIdService: OpenIdService, eventAggregator: EventAggregator) {
         this.applicationSettings = appSettings;
         this.localStorageProvider = localStorageProvider;
         this.oAuthService = oAuthService;
         this.openIdService = openIdService;
+        this.eventAggregator = eventAggregator;
     }
 
     login(username: string, password: string): Promise<LoginResult> {
@@ -33,6 +36,7 @@ export class AuthenticationProvider {
                             this.isAuthenticated = loginResult.success;
                             if (loginResult.success) {
                                 this.setToken(result.token);
+                                this.publish(true);
                             }                            
                             resolve(loginResult); 
                         }).catch(error => {                            
@@ -68,15 +72,16 @@ export class AuthenticationProvider {
     isAuth(): Promise<boolean> {
         var promise = new Promise<boolean>((resolve, reject) => {
             try {
-                var token = this.getToken();
+                var token = this.getToken();                
 
                 if (token === null || typeof token === 'undefined' || token.length === 0) {
+                    
                     resolve(false);
                 } else {
                     // TODO: Implement better logic around the isAuth concept? 
                     // This is a starting point.
                     // Ideally one might require more logic,
-                    // other than just basing it on the presence of a token
+                    // other than just basing it on the presence of a token                    
                     resolve(true);
                 }
             } catch (error) {
@@ -87,9 +92,19 @@ export class AuthenticationProvider {
         return promise;
     }
 
-    logout(): void {
-        this.clearToken();
-        this.isAuthenticated = false;
+    logout(): Promise<boolean> {
+        var promise = new Promise<boolean>((resolve, reject) => {
+            try {
+                this.clearToken();
+                this.isAuthenticated = false;
+                this.publish(false);
+                resolve(true);
+            } catch (error) {
+                reject(false);
+            }
+        });
+
+        return promise;
     }
 
     setToken(token: string): void {
@@ -102,6 +117,10 @@ export class AuthenticationProvider {
 
     clearToken(): void {
         this.localStorageProvider.remove('authToken');
+    }
+
+    publish(isLogin: boolean): void {
+        this.eventAggregator.publish('LoginEvent', isLogin);
     }
 }
 

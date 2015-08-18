@@ -1,17 +1,35 @@
-﻿import { inject } from 'aurelia-framework';
-import { bindable } from 'aurelia-framework';
+﻿import { inject, bindable } from 'aurelia-framework';
 import { AuthenticationProvider } from 'core/CoreProviders';
+import {EventAggregator} from 'aurelia-event-aggregator';
 
-@inject(AuthenticationProvider)
+@inject(AuthenticationProvider, EventAggregator)
 export class NavTop {
     @bindable router = null;
     authenticationProvider: AuthenticationProvider = null;
+    isAuthenticated: boolean = false;
+    eventAggregator: EventAggregator = null;
 
-    constructor(authenticationProvider: AuthenticationProvider) {
+    constructor(authenticationProvider: AuthenticationProvider, eventAggregator: EventAggregator) {
         this.authenticationProvider = authenticationProvider;
+        this.eventAggregator = eventAggregator;
     }
 
-    get isAuthenticated(): Promise<boolean> {
-        return this.authenticationProvider.isAuth();
+    logout() {
+        this.authenticationProvider.logout().then(result => {
+            this.router.navigate('welcome');
+        }).catch(error => {
+            console.log('logoutResult Error', error);
+        });
+    }
+
+    subscribe(): void {
+        this.eventAggregator.subscribe('LoginEvent', isLogin => {
+            this.isAuthenticated = isLogin;
+        });
+    }
+
+    attached() {
+        this.subscribe();
+        return this.authenticationProvider.isAuth().then(isAuth => this.isAuthenticated = isAuth);
     }
 }

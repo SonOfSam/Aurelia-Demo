@@ -72,6 +72,8 @@ export class LocalStorageProvider {
                     } else {
                         console.warn('Warning: Local Storage is disabled or unavailable');                        
                     }
+
+                    break;
                 }
             case LocalStorageTypes.Session:
                 {
@@ -80,10 +82,13 @@ export class LocalStorageProvider {
                     } else {
                         console.warn('Warning: Session Storage is disabled or unavailable.  will not work correctly.');                        
                     }
+
+                    break;
                 }
             default:
                 {
-                    console.warn('Warning: The configured local storage value is not valid, please check application settings.');                    
+                    var warnText = `${"Warning: The configured local storage value is not valid, please check application settings..."}${this.applicationSettings.localStorageMode}`;
+                    console.warn(warnText);                  
                 }
         }
     }
