@@ -65,8 +65,26 @@ export class AuthenticationProvider {
         return promise;
     }
 
-    isAuth(): boolean {
-        return this.isAuthenticated;
+    isAuth(): Promise<boolean> {
+        var promise = new Promise<boolean>((resolve, reject) => {
+            try {
+                var token = this.getToken();
+
+                if (token === null || typeof token === 'undefined' || token.length === 0) {
+                    resolve(false);
+                } else {
+                    // TODO: Implement better logic around the isAuth concept? 
+                    // This is a starting point.
+                    // Ideally one might require more logic,
+                    // other than just basing it on the presence of a token
+                    resolve(true);
+                }
+            } catch (error) {
+                reject(false);
+            }
+        });
+
+        return promise;
     }
 
     logout(): void {

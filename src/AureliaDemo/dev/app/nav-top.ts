@@ -11,7 +11,7 @@ export class NavTop {
         this.authenticationProvider = authenticationProvider;
     }
 
-    get isAuthenticated(): boolean {
+    get isAuthenticated(): Promise<boolean> {
         return this.authenticationProvider.isAuth();
     }
 }
