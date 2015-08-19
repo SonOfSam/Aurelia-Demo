@@ -1,15 +1,20 @@
 ﻿import { inject } from 'aurelia-framework';
-import { RequestBuilder } from 'aurelia-http-client';
+import { RequestBuilder, HttpClient } from 'aurelia-http-client';
+import { Router } from 'aurelia-router'
 import { AuthenticationProvider } from 'core/CoreProviders'
 import { AuthenticationInterceptor } from 'core/CoreInterceptors'
 
-@inject(AuthenticationProvider)
+@inject(AuthenticationProvider, Router, HttpClient)
 export class HttpClientExtensions {
     requestBuilder = null;
     authenticationProvider: AuthenticationProvider = null;
+    router: Router = null;
+    httpClient: HttpClient = null;
 
-    constructor(authenticationProvider: AuthenticationProvider) {        
+    constructor(authenticationProvider: AuthenticationProvider, router: Router, httpClient: HttpClient) {        
         this.authenticationProvider = authenticationProvider;
+        this.router = router;
+        this.httpClient = httpClient;
     }
 
     configure() {        
@@ -19,7 +24,7 @@ export class HttpClientExtensions {
 
                 if (internalAuth) {
                     message.interceptors = message.interceptors || [];
-                    message.interceptors.unshift(new AuthenticationInterceptor(this.authenticationProvider));
+                    message.interceptors.unshift(new AuthenticationInterceptor(this.authenticationProvider, this.router, this.httpClient));
                 }
 
                 message.headers.add('Authorization', token);       
