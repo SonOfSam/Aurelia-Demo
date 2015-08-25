@@ -37,9 +37,9 @@ export class AuthenticationProvider {
                             if (loginResult.success) {
                                 this.setToken(result.token);
                                 this.publish(true);
-                            }                            
-                            resolve(loginResult); 
-                        }).catch(error => {                            
+                            }
+                            resolve(loginResult);
+                        }).catch(error => {
                             loginResult.success = false;
                             loginResult.errorText = error.errorText;
                             reject(loginResult);
@@ -49,7 +49,7 @@ export class AuthenticationProvider {
                 }
             case Enumerations.AuthenticationTypes.OAuth:
                 {
-                    loginResult.errorText = "Not yet implemented";
+                    loginResult.errorText = 'Not yet implemented';
                     promise = new Promise<LoginResult>((resolve) => {
                         resolve(loginResult);
                     });
@@ -72,10 +72,10 @@ export class AuthenticationProvider {
     isAuth(): Promise<boolean> {
         var promise = new Promise<boolean>((resolve, reject) => {
             try {
-                var token = this.getToken();                
+                var token = this.getToken();
 
                 if (token === null || typeof token === 'undefined' || token.length === 0) {
-                    
+
                     resolve(false);
                 } else {
                     // TODO: Implement better logic around the isAuth concept? 
@@ -108,15 +108,47 @@ export class AuthenticationProvider {
     }
 
     refreshToken(): Promise<LoginResult> {
-        var promise = new Promise<LoginResult>((resolve, reject) => {
+        var loginResult = new LoginResult();
+        return new Promise<LoginResult>((resolve, reject) => {
             try {
-                reject("Not implemented yet");
+                var currentToken = this.getToken();
+                switch (this.applicationSettings.authenticationMode) {
+                    case Enumerations.AuthenticationTypes.OpenId:
+                        {
+                            this.openIdService.refreshToken(currentToken).then(result => {
+                                loginResult.success = result.success;
+                                loginResult.errorText = result.errorText;
+                                if (loginResult.success) {
+                                    this.setToken(result.token);
+                                    resolve(loginResult);
+                                } else {
+                                    reject(loginResult);
+                                }
+                            }).catch(error => {
+                                loginResult.success = false;
+                                loginResult.errorText = error.errorText;
+                                reject(loginResult);
+                            });
+                            break;
+                        }
+                    case Enumerations.AuthenticationTypes.OAuth:
+                        {
+                            reject('OAuth Not Implemented Yet');
+                            break;
+                        }
+                    default:
+                        {
+                            var defaultErrorText = 'Warning: Authentication mode not supported. Check ApplicationSettings';
+                            console.error(defaultErrorText);
+                            loginResult.errorText = defaultErrorText;
+                            loginResult.success = false;
+                            reject(loginResult);
+                        }
+                }
             } catch (error) {
                 reject(error);
             }
         });
-
-        return promise;
     }
 
     setToken(token: string): void {

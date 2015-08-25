@@ -81,6 +81,56 @@ export class OpenIdService {
 
         return promise;
     }
+
+    refreshToken(token : string): Promise<AccessTokenRequestResult> {
+        var loginResult = new AccessTokenRequestResult();
+        return new Promise<AccessTokenRequestResult>((resolve, reject) => {
+            try {
+                if (token.length < 10) {
+                    loginResult.success = false;
+                    loginResult.errorText = "Not a valid token to refresh";
+                    reject(loginResult);
+                }
+                var credentials = `${this.applicationSettings.clientId}:${this.applicationSettings.clientSecret}`;
+                var credentialsBase64Value = this.base64Helper.encode(credentials);
+                var credentialsHeaderValue = `${"Basic "}${credentialsBase64Value}`;
+
+                var grantContent = 'grant_type=refresh_token';
+                var tokenContent = `${"&refresh_token="}${token}`;
+                var bodyContent = `${grantContent}${tokenContent}`;
+
+                this.httpClient.createRequest(this.serverConfiguration.token_endpoint)
+                    .withHeader('Authorization', credentialsHeaderValue)
+                    .withHeader('Content-Type', 'application/x-www-form-urlencoded')
+                    .asPost()
+                    .withContent(bodyContent)
+                    .send()
+                    .then(response => {
+                        if (response.isSuccess) {
+                            var loginResponse = JSON.parse(response.response);
+                            loginResult.token = loginResponse.access_token;
+                            loginResult.success = true;
+                            resolve(loginResult);
+                        } else {
+                            var errorResponse = JSON.parse(response.response);
+                            loginResult.success = false;
+                            loginResult.errorText = errorResponse;
+                            resolve(loginResult);
+                        }
+                    }).catch(error => {
+                        var errorResponse = JSON.parse(error.response);
+                        loginResult.success = false;
+                        loginResult.errorText = errorResponse.error;
+                        reject(loginResult);
+                    });
+            } catch (error) {
+                var errorResponse = JSON.parse(error.response);
+                loginResult.success = false;
+                loginResult.errorText = errorResponse.error;
+                reject(loginResult);
+            }
+        });
+    }
 }
 
 export class AccessTokenRequestResult {

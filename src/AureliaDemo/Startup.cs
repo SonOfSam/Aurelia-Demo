@@ -77,9 +77,7 @@
 
             app.Map("/core", core =>
             {
-                //var factory = InMemoryFactory.Create(Users.Get(), Clients.Get(), Scopes.Get());
-
-                var factory = Factory.Configure();           
+                var factory = Factory.Configure();
 
                 factory.Register(new Registration<ApplicationDbContext>());
                 factory.Register(new Registration<ApplicationUserStore>());
