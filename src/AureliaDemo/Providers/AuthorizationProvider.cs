@@ -45,7 +45,6 @@ namespace AureliaDemo.Providers
             }
         }
 
-
         public override async Task ValidateClientAuthentication(ValidateClientAuthenticationNotification notification)
         {
             // Note: client authentication is not mandatory for non-confidential client applications like mobile apps
@@ -89,64 +88,6 @@ namespace AureliaDemo.Providers
             }
 
             notification.Validated();
-        }
-
-        public override async Task ValidateClientRedirectUri(ValidateClientRedirectUriNotification notification)
-        {
-            var context = notification.HttpContext.RequestServices.GetRequiredService<ApplicationContext>();
-
-            // Retrieve the application details corresponding to the requested client_id.
-            var application = await (from entity in context.Applications
-                                     where entity.ApplicationId == notification.ClientId
-                                     select entity).SingleOrDefaultAsync(notification.HttpContext.RequestAborted);
-
-            if (application == null)
-            {
-                notification.Rejected(
-                    error: "invalid_client",
-                    description: "Application not found in the database: ensure that your client_id is correct");
-
-                return;
-            }
-
-            if (!string.IsNullOrEmpty(notification.RedirectUri))
-            {
-                if (!string.Equals(notification.RedirectUri, application.RedirectUri, StringComparison.Ordinal))
-                {
-                    notification.Rejected(error: "invalid_client", description: "Invalid redirect_uri");
-
-                    return;
-                }
-            }
-
-            notification.Validated(application.RedirectUri);
-        }
-
-        public override async Task ValidateClientLogoutRedirectUri(ValidateClientLogoutRedirectUriNotification notification)
-        {
-            var context = notification.HttpContext.RequestServices.GetRequiredService<ApplicationContext>();
-
-            if (!await context.Applications.AnyAsync(application => application.LogoutRedirectUri == notification.PostLogoutRedirectUri))
-            {
-                notification.Rejected(error: "invalid_client", description: "Invalid post_logout_redirect_uri");
-
-                return;
-            }
-
-            notification.Validated();
-        }
-
-        public override Task MatchEndpoint(MatchEndpointNotification notification)
-        {
-            // Note: by default, OpenIdConnectServerHandler only handles authorization requests made to the authorization endpoint.
-            // This notification handler uses a more relaxed policy that allows extracting authorization requests received at
-            // /connect/authorize/accept and /connect/authorize/deny (see AuthorizationController.cs for more information).
-            if (notification.Request.Path.StartsWithSegments(notification.Options.AuthorizationEndpointPath))
-            {
-                notification.MatchesAuthorizationEndpoint();
-            }
-
-            return Task.FromResult<object>(null);
         }
 
         public override Task ValidateTokenRequest(ValidateTokenRequestNotification notification)
