@@ -1,6 +1,7 @@
 ﻿{
   "webroot": "wwwroot",
   "version": "1.0.0-*",
+  "resource": [ "Certificate.pfx" ],
 
   "dependencies": {
     "Microsoft.AspNet.Server.IIS": "1.0.0-beta7",
@@ -12,11 +13,15 @@
     "Microsoft.Owin": "3.0.1",
     "Microsoft.AspNet.Mvc": "6.0.0-beta7",
     "Microsoft.AspNet.Authentication.OAuthBearer": "1.0.0-beta7",
-    "Microsoft.Framework.Configuration.Json": "1.0.0-beta7"
+    "Microsoft.Framework.Configuration.Json": "1.0.0-beta7",
+    "AspNet.Security.OpenIdConnect.Server": "1.0.0-beta2",
+    "EntityFramework.SqlServer": "7.0.0-beta7",
+    "EntityFramework.Commands": "7.0.0-beta7"
   },
 
   "commands": {
-    "web": "Microsoft.AspNet.Hosting --config hosting.ini"
+    "web": "Microsoft.AspNet.Hosting --config hosting.ini",
+    "ef": "EntityFramework.Commands"
   },
 
   "frameworks": {
