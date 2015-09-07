@@ -53,10 +53,7 @@ namespace AureliaDemo.Providers
 
         public override Task ValidateTokenRequest(ValidateTokenRequestNotification notification)
         {
-            // Note: OpenIdConnectServerHandler supports authorization code, refresh token, client credentials
-            // and resource owner password credentials grant types but this authorization server uses a safer policy
-            // rejecting the last two ones. You may consider relaxing it to support the ROPC or client credentials grant types.
-            if (notification.Request.IsAuthorizationCodeGrantType() || notification.Request.IsRefreshTokenGrantType())
+            if (notification.Request.IsPasswordGrantType() || notification.Request.IsRefreshTokenGrantType())
             {
                 notification.Validated();
 
