@@ -16,6 +16,8 @@
     using System.Reflection;
 
     using AureliaDemo.Models;
+
+    using Microsoft.AspNet.Http;
     using Microsoft.Data.Entity;
 
     public class Startup
@@ -42,6 +44,12 @@
                 .AddDbContext<ApplicationContext>(options =>
                     options.UseSqlServer(this.Configuration["Data:DefaultConnection:ConnectionString"]));
 
+            services.Configure<ContextOptions>(options =>
+           {
+               options.DefaultAdminUserName = this.Configuration["AdminUser:Username"];
+               options.DefaultAdminPassword = this.Configuration["AdminUser:Password"];
+           });
+
             services.AddIdentity<ApplicationUser, ApplicationRole>()
                 .AddEntityFrameworkStores<ApplicationContext>();
 
@@ -54,6 +62,18 @@
 
         public void Configure(IApplicationBuilder app, IRuntimeEnvironment env)
         {
+            app.Map("/api", api =>
+            {
+                api.UseOAuthBearerAuthentication(options =>
+                {
+                    options.AutomaticAuthentication = true;
+                    options.Authority = "http://localhost:35718/core/connect/authorize";
+                    options.MetadataAddress = "http://localhost:35718/core/.well-known/openid-configuration";
+                });
+
+                api.UseMvc();
+            });
+
             app.UseOpenIdConnectServer(options =>
             {
                 options.AuthenticationScheme = OpenIdConnectDefaults.AuthenticationScheme;
@@ -70,19 +90,21 @@
                 }
                 else
                 {
-                    options.UseCertificate(typeof(Startup).GetTypeInfo().Assembly, "Mvc.Server.Certificate.pfx", "Owin.Security.OpenIdConnect.Server");
+                    options.UseCertificate(typeof(Startup).GetTypeInfo().Assembly, "AureliaDemo.Certificate.pfx", "Owin.Security.OpenIdConnect.Server");
                 }
 
-                // Note: see AuthorizationController.cs for more
-                // information concerning ApplicationCanDisplayErrors.
                 options.ApplicationCanDisplayErrors = true;
                 options.AllowInsecureHttp = true;
+                options.Issuer = new Uri("http://localhost:35718/");
+                options.AuthorizationEndpointPath = "core/connect/authorize";
 
                 options.Provider = new AuthorizationProvider();
             });
 
 
             app.UseStaticFiles();
+
+            ApplicationDbOperations.InitializeIdentityDbAsync(app.ApplicationServices).Wait();
         }
     }
 }
