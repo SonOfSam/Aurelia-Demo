@@ -42,6 +42,9 @@
                 .AddDbContext<ApplicationContext>(options =>
                     options.UseSqlServer(this.Configuration["Data:DefaultConnection:ConnectionString"]));
 
+            services.AddIdentity<ApplicationUser, ApplicationRole>()
+                .AddEntityFrameworkStores<ApplicationContext>();
+
             //OpenIdConnect Server
             services.AddAuthentication();
             services.AddCaching();
