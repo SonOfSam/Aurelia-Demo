@@ -5,14 +5,47 @@ namespace AureliaDemo.Providers
 {
     using AspNet.Security.OpenIdConnect.Server;
     using System.Linq;
+    using System.Security.Claims;
 
     using AureliaDemo.Models;
     using Microsoft.Framework.DependencyInjection;
     using Microsoft.Data.Entity;
     using AspNet.Security.OpenIdConnect.Extensions;
 
+    using Microsoft.AspNet.Identity;
+
     public sealed class AuthorizationProvider : OpenIdConnectServerProvider
     {
+        public async override Task GrantResourceOwnerCredentials(GrantResourceOwnerCredentialsNotification notification)
+        {
+            var username = notification.UserName;
+            var password = notification.Password;
+
+            var userManager = notification
+                .HttpContext
+                .RequestServices
+                .GetRequiredService<UserManager<ApplicationUser>>();
+
+            var user = await userManager.FindByNameAsync(username);
+            var isValid = await userManager.CheckPasswordAsync(user, password);
+
+            if (isValid)
+            {
+                var identity = new ClaimsIdentity(OpenIdConnectDefaults.AuthenticationScheme);
+
+                // this automatically goes into the token and id_token
+                identity.AddClaim(ClaimTypes.NameIdentifier, "TODO: Add an appropriate name identifier.");
+
+                // the other claims require explicit destinations
+                identity.AddClaim(ClaimTypes.Name, username, "token id_token");
+                identity.AddClaim(ClaimTypes.Surname, "Doe", "token id_token");
+
+                var principal = new ClaimsPrincipal(identity);
+                notification.Validated(principal);
+            }
+        }
+
+
         public override async Task ValidateClientAuthentication(ValidateClientAuthenticationNotification notification)
         {
             // Note: client authentication is not mandatory for non-confidential client applications like mobile apps

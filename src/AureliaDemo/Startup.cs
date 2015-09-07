@@ -15,6 +15,9 @@
     using Microsoft.Framework.DependencyInjection;
     using System.Reflection;
 
+    using AureliaDemo.Models;
+    using Microsoft.Data.Entity;
+
     public class Startup
     {
         public Startup(IHostingEnvironment env, IApplicationEnvironment appEnv)
@@ -34,6 +37,11 @@
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddEntityFramework()
+                .AddSqlServer()
+                .AddDbContext<ApplicationContext>(options =>
+                    options.UseSqlServer(this.Configuration["Data:DefaultConnection:ConnectionString"]));
+
             //OpenIdConnect Server
             services.AddAuthentication();
             services.AddCaching();
