@@ -7,7 +7,7 @@ import { Base64 } from 'core/helpers/Base64';
 export class OpenIdService {
     applicationSettings: ApplicationSettings = null;
     httpClient: HttpClient = null;
-    configEndpoint: string = 'core/.well-known/openid-configuration';
+    configEndpoint: string = '.well-known/openid-configuration';
     serverConfiguration: OpenIdTypes.IServerConfiguration = null;
     base64Helper: Base64 = null;
 

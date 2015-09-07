@@ -17,8 +17,9 @@
 
     using AureliaDemo.Models;
 
-    using Microsoft.AspNet.Http;
     using Microsoft.Data.Entity;
+    using Microsoft.AspNet.Identity;
+    using Microsoft.Framework.DependencyInjection.Extensions;
 
     public class Startup
     {
@@ -50,8 +51,15 @@
                options.DefaultAdminPassword = this.Configuration["AdminUser:Password"];
            });
 
+            services.TryAdd(ServiceDescriptor.Scoped<IUserStore<ApplicationUser>, ApplicationUserStore>());
+            services.TryAdd(ServiceDescriptor.Scoped<IRoleStore<ApplicationRole>, ApplicationRoleStore>());
+            services.TryAdd(ServiceDescriptor.Scoped<RoleManager<ApplicationRole>, ApplicationRoleManager>());
+
+
             services.AddIdentity<ApplicationUser, ApplicationRole>()
-                .AddEntityFrameworkStores<ApplicationContext>();
+                .AddUserStore<ApplicationUserStore>()
+                .AddRoleStore<ApplicationRoleStore>()
+                .AddRoleManager<ApplicationRoleManager>();
 
             //OpenIdConnect Server
             services.AddAuthentication();
@@ -68,7 +76,7 @@
                 {
                     options.AutomaticAuthentication = true;
                     options.Authority = "http://localhost:35718/core/connect/authorize";
-                    options.MetadataAddress = "http://localhost:35718/core/.well-known/openid-configuration";
+                    options.MetadataAddress = "http://localhost:35718/.well-known/openid-configuration";
                 });
 
                 api.UseMvc();
@@ -96,12 +104,12 @@
                 options.ApplicationCanDisplayErrors = true;
                 options.AllowInsecureHttp = true;
                 options.Issuer = new Uri("http://localhost:35718/");
-                options.AuthorizationEndpointPath = "core/connect/authorize";
+                options.AuthorizationEndpointPath = "/core/connect/authorize";
 
                 options.Provider = new AuthorizationProvider();
             });
 
-
+            app.UseDefaultFiles();
             app.UseStaticFiles();
 
             ApplicationDbOperations.InitializeIdentityDbAsync(app.ApplicationServices).Wait();
