@@ -42,9 +42,6 @@ export class OpenIdService {
             return promise;
         }
 
-        var credentials = `${this.applicationSettings.clientId}:${this.applicationSettings.clientSecret}`;
-        var credentialsBase64Value = this.base64Helper.encode(credentials);
-        var credentialsHeaderValue = `${"Basic "}${credentialsBase64Value}`;
         var grantContent = 'grant_type=password';
         var userNameContent = `${"&username="}${userName}`;
         var passwordContent = `${"&password="}${password}`;
@@ -54,7 +51,6 @@ export class OpenIdService {
 
         promise = new Promise<AccessTokenRequestResult>((resolve, reject) => {
             this.httpClient.createRequest(this.serverConfiguration.token_endpoint)
-                .withHeader('Authorization', credentialsHeaderValue)
                 .withHeader('Content-Type', 'application/x-www-form-urlencoded')
                 .asPost()
                 .withContent(bodyContent)
@@ -93,16 +89,12 @@ export class OpenIdService {
                     loginResult.errorText = "Not a valid token to refresh";
                     reject(loginResult);
                 }
-                var credentials = `${this.applicationSettings.clientId}:${this.applicationSettings.clientSecret}`;
-                var credentialsBase64Value = this.base64Helper.encode(credentials);
-                var credentialsHeaderValue = `${"Basic "}${credentialsBase64Value}`;
 
                 var grantContent = 'grant_type=refresh_token';
                 var tokenContent = `${"&refresh_token="}${token}`;
                 var bodyContent = `${grantContent}${tokenContent}`;
 
                 this.httpClient.createRequest(this.serverConfiguration.token_endpoint)
-                    .withHeader('Authorization', credentialsHeaderValue)
                     .withHeader('Content-Type', 'application/x-www-form-urlencoded')
                     .asPost()
                     .withContent(bodyContent)
