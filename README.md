@@ -1,7 +1,7 @@
 # Aurelia-Demo
 Aurelia Demo using TypeScript via gulp
 
-> To keep up to date on [Aurelia](http://www.aurelia.io/), please visit and subscribe to [the official blog](http://blog.durandal.io/). Demo can be seen running on [Azure](http://aureliademo.azurewebsites.net/). Keep in mind that no bundling or any form of optimization has taken place before publishing to Azure, and it is also running in a shared and free instance and this will lead to slow load times.
+> To keep up to date on [Aurelia](http://www.aurelia.io/), please visit and subscribe to [the official blog](http://blog.durandal.io/). 
 
 ### Project Details
 This project is still currently, work in progress. However it is still runs correctly provided you perform the correct steps.
@@ -35,43 +35,20 @@ To run the app, follow these steps.
   ```shell
   jspm install -y
   ```
-  >**Note:** Make sure to run this command in the AureliaDemo folder where the project.json is located. Windows users, if you experience an error of "unknown command unzip" you can solve this problem by doing `npm install -g unzip` and then re-running `jspm install`.
-3. Run the 'copy-jspm-libs' task
+  >**Note:** Make sure to run this command in the `src/AureliaDemo` folder where the project.json is located. Windows users, if you experience an error of "unknown command unzip" you can solve this problem by doing `npm install -g unzip` and then re-running `jspm install`.
+3. Run `npm install` (this will install local gulp used by the next steps)
+3. Run `gulp copy-jspm-libs` (gulp task)
   >This will copy the files from where jspm install places the libraries, into the correct directory in the wwwroot folder.
-4. Run the 'copy-jspm-config' task
-  >This will copy the config.js file to the correct directory in the wwwroot folder
-5. Run the 'process-css' task
+4. Run `gulp copy-jspm-config` (gulp task)
+  >This will copy the `config.js` file to the correct directory in the wwwroot folder
+5. Run `gulp process-css` (gulp task)
   >This will copy the css files to the correct directory in the wwwroot folder
-6. Run the 'process-html' task
+6. Run `gulp process-html` (gulp task)
   >This will copy the html files to the correct directory in the wwwroot folder
-7. Run the 'compile-typescript' task
+7. Run `gulp compile-typescript` (gulp task)
   >This will copy the html files to the correct directory in the wwwroot folder
 8. You should now be able to run the project.
 
 ##Authentication
 
-We have implemented Identity Server V3 from [Thinktecture](https://identityserver.github.io/Documentation/) and configured it with in memory stores,
-which can easily be substituted for real world scenarios. We have also added a user service, so that users are read from the Identity system.
-
-To create get a authentication token, one must post to the token endpoint which in the demo code resides at: http://localhost:35718/core/connect/token
-You will need two headers in the post.
-1. Content-Type: application/x-www-form-urlencoded
-2. Authorization : Basic xyz123 
-
-Basic xyz123 should be subsituted for the result of the following code or likewise operation in the language of your choice:
-```
-            var encoding = Encoding.UTF8;
-            var credentials = $"{"IdentityWebUI"}:{"secret"}";
-
-            var headerValue = Convert.ToBase64String(encoding.GetBytes(credentials));
-
-            $"{"Basic"} {headerValue}";
-```
-
-In the post body the following can be placed.
-grant_type=password&username=alice&password=alice@scope=openid
-
 More to follow soon.
-
-
-

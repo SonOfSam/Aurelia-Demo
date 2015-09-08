@@ -77,6 +77,7 @@
                 {
                     options.AutomaticAuthentication = true;
                     options.Authority = "http://localhost:35718/";
+                    options.TokenValidationParameters.ValidAudience = "http://localhost:35718/";
                 });
 
                 api.UseMvc();

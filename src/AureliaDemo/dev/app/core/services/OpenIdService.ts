@@ -46,8 +46,9 @@ export class OpenIdService {
         var userNameContent = `${"&username="}${userName}`;
         var passwordContent = `${"&password="}${password}`;
         var scopeContent = `${"&scope="}${this.applicationSettings.authorizationScope}`;
+        var resourceContent = '&resource=http://localhost:35718/';
 
-        var bodyContent = `${grantContent}${userNameContent}${passwordContent}${scopeContent}`;
+        var bodyContent = `${grantContent}${userNameContent}${passwordContent}${scopeContent}${resourceContent}`;
 
         promise = new Promise<AccessTokenRequestResult>((resolve, reject) => {
             this.httpClient.createRequest(this.serverConfiguration.token_endpoint)

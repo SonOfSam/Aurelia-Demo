@@ -27,7 +27,7 @@ export class HttpClientExtensions {
                     message.interceptors.unshift(new AuthenticationInterceptor(this.authenticationProvider, this.router, this.httpClient));
                 }
 
-                message.headers.add('Authorization', token);       
+                message.headers.add('Authorization', `${"bearer "}${token}`);
             };
         }
         RequestBuilder.addHelper('withToken', withToken);
