@@ -12,6 +12,7 @@ namespace AureliaDemo.Providers
     using Microsoft.Data.Entity;
     using AspNet.Security.OpenIdConnect.Extensions;
 
+    using Microsoft.AspNet.Authentication;
     using Microsoft.AspNet.Identity;
 
     public sealed class AuthorizationProvider : OpenIdConnectServerProvider
@@ -47,6 +48,7 @@ namespace AureliaDemo.Providers
 
         public override Task ValidateClientAuthentication(ValidateClientAuthenticationNotification notification)
         {
+            notification.ClientId = string.Empty;
             notification.Validated();
             return Task.FromResult<object>(null);
         }

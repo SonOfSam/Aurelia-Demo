@@ -36,6 +36,7 @@ export class AuthenticationProvider {
                             this.isAuthenticated = loginResult.success;
                             if (loginResult.success) {
                                 this.setToken(result.token);
+                                this.setRefreshToken(result.refreshToken);
                                 this.publish(true);
                             }
                             resolve(loginResult);
@@ -111,15 +112,16 @@ export class AuthenticationProvider {
         var loginResult = new LoginResult();
         return new Promise<LoginResult>((resolve, reject) => {
             try {
-                var currentToken = this.getToken();
+                var currentToken = this.getRefreshToken();
                 switch (this.applicationSettings.authenticationMode) {
                     case Enumerations.AuthenticationTypes.OpenId:
                         {
                             this.openIdService.refreshToken(currentToken).then(result => {
                                 loginResult.success = result.success;
                                 loginResult.errorText = result.errorText;
+                                console.log(result);
                                 if (loginResult.success) {
-                                    this.setToken(result.token);
+                                    this.setRefreshToken(result.refreshToken);
                                     resolve(loginResult);
                                 } else {
                                     reject(loginResult);
@@ -155,12 +157,21 @@ export class AuthenticationProvider {
         this.localStorageProvider.set('authToken', token);
     }
 
+    setRefreshToken(refreshToken: string): void {
+        this.localStorageProvider.set('refreshToken', refreshToken);
+    }
+
     getToken(): string {
         return this.localStorageProvider.get('authToken');
     }
 
+    getRefreshToken(): string {
+        return this.localStorageProvider.get('refreshToken');
+    }
+
     clearToken(): void {
         this.localStorageProvider.remove('authToken');
+        this.localStorageProvider.remove('refreshToken');
     }
 
     publish(isLogin: boolean): void {

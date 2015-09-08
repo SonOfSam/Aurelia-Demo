@@ -60,12 +60,14 @@ export class OpenIdService {
                 .withContent(bodyContent)
                 .send()
                 .then(response => {
-                    if (response.isSuccess) {                        
+                    if (response.isSuccess) {
                         var loginResponse = JSON.parse(response.response);
+                        console.log("login", response);
                         loginResult.token = loginResponse.access_token;
+                        loginResult.refreshToken = loginResponse.refresh_token;
                         loginResult.success = true;
                         resolve(loginResult);
-                    } else {                        
+                    } else {
                         var errorResponse = JSON.parse(response.response);
                         loginResult.success = false;
                         loginResult.errorText = errorResponse;
@@ -82,7 +84,7 @@ export class OpenIdService {
         return promise;
     }
 
-    refreshToken(token : string): Promise<AccessTokenRequestResult> {
+    refreshToken(token: string): Promise<AccessTokenRequestResult> {
         var loginResult = new AccessTokenRequestResult();
         return new Promise<AccessTokenRequestResult>((resolve, reject) => {
             try {
@@ -107,8 +109,10 @@ export class OpenIdService {
                     .send()
                     .then(response => {
                         if (response.isSuccess) {
+                            console.log("refresh", response);
                             var loginResponse = JSON.parse(response.response);
                             loginResult.token = loginResponse.access_token;
+                            loginResult.refreshToken = loginResponse.refresh_token;
                             loginResult.success = true;
                             resolve(loginResult);
                         } else {
@@ -137,4 +141,5 @@ export class AccessTokenRequestResult {
     success: boolean = false;
     errorText: string = '';
     token: string = null;
+    refreshToken: string = null;
 }
