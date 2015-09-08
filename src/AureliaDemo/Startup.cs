@@ -56,7 +56,6 @@
             services.TryAdd(ServiceDescriptor.Scoped<IRoleStore<ApplicationRole>, ApplicationRoleStore>());
             services.TryAdd(ServiceDescriptor.Scoped<RoleManager<ApplicationRole>, ApplicationRoleManager>());
 
-
             services.AddIdentity<ApplicationUser, ApplicationRole>()
                 .AddUserStore<ApplicationUserStore>()
                 .AddRoleStore<ApplicationRoleStore>()
@@ -77,7 +76,7 @@
                 {
                     options.AutomaticAuthentication = true;
                     options.Authority = "http://localhost:35718/";
-                    options.TokenValidationParameters.ValidAudience = "http://localhost:35718/";
+                    options.Audience = "http://localhost:35718/";
                 });
 
                 api.UseMvc();
