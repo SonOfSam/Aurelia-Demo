@@ -21,9 +21,18 @@ export class Login {
 
     login() {
         this.authenticationProvider.login(this.username, this.password).then(result => {
-            this.router.navigate('welcome');
+            //this.router.navigate('welcome');
+            console.log('login() => ', result);
         }).catch(error => {
             console.log('loginResult Error', error);
+        });
+    }
+
+    refresh() {
+        this.authenticationProvider.refreshToken().then(result => {
+            console.log('refreshToken() => ', result);
+        }).catch(error => {
+            console.log('refreshToken Error', error);
         });
     }
 
@@ -31,13 +40,16 @@ export class Login {
         this.httpClient.createRequest('http://localhost:35718/api/test')
             .withToken()
             .asGet()
-            .send();
+            .send().then(result => {
+                console.log(result);
+            });
     }
 
     test2() {
-        this.httpClient.createRequest('http://localhost:35718/api/test')            
+        this.httpClient.createRequest('http://localhost:35718/api/test')
             .asGet()
-            .send();
+            .send().then(result => {
+                console.log(result);
+            });
     }
-
 }
