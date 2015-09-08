@@ -1,18 +1,14 @@
-﻿using System;
-using System.Threading.Tasks;
-
-namespace AureliaDemo.Providers
+﻿namespace AureliaDemo.Providers
 {
+    using System.Threading.Tasks;
     using AspNet.Security.OpenIdConnect.Server;
-    using System.Linq;
     using System.Security.Claims;
-
-    using AureliaDemo.Models;
     using Microsoft.Framework.DependencyInjection;
-    using Microsoft.Data.Entity;
     using AspNet.Security.OpenIdConnect.Extensions;
 
-    using Microsoft.AspNet.Authentication;
+    using AureliaDemo.Models;
+
+
     using Microsoft.AspNet.Identity;
 
     public sealed class AuthorizationProvider : OpenIdConnectServerProvider
@@ -35,11 +31,11 @@ namespace AureliaDemo.Providers
                 var identity = new ClaimsIdentity(OpenIdConnectDefaults.AuthenticationScheme);
 
                 // this automatically goes into the token and id_token
-                identity.AddClaim(ClaimTypes.NameIdentifier, "TODO: Add an appropriate name identifier.");
+                identity.AddClaim(ClaimTypes.NameIdentifier, user.UserName);
 
                 // the other claims require explicit destinations
-                identity.AddClaim(ClaimTypes.Name, username, "token id_token");
-                identity.AddClaim(ClaimTypes.Surname, "Doe", "token id_token");
+                identity.AddClaim(ClaimTypes.Name, user.FirstName, "token id_token");
+                identity.AddClaim(ClaimTypes.Surname, user.LastName, "token id_token");
 
                 var principal = new ClaimsPrincipal(identity);
                 notification.Validated(principal);
