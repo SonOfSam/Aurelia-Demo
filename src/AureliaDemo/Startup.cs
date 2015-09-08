@@ -1,70 +1,118 @@
 ﻿namespace AureliaDemo
 {
-    using System.Security.Cryptography.X509Certificates;
+    using System;
+    using System.IdentityModel.Tokens;
+    using System.Security.Cryptography;
 
-    using AureliaDemo.Configuration;
+    using AspNet.Security.OpenIdConnect.Server;
+
+    using AureliaDemo.Providers;
 
     using Microsoft.AspNet.Builder;
-    using Microsoft.AspNet.Diagnostics;
+    using Microsoft.AspNet.Hosting;
+    using Microsoft.Dnx.Runtime;
+    using Microsoft.Framework.Configuration;
     using Microsoft.Framework.DependencyInjection;
-    using Microsoft.Framework.Runtime;
+    using System.Reflection;
 
-    using Thinktecture.IdentityServer.Core.Configuration;
-    using Thinktecture.IdentityServer.Core.Logging;
+    using AureliaDemo.Models;
+
+    using Microsoft.AspNet.Http;
+    using Microsoft.Data.Entity;
+    using Microsoft.AspNet.Identity;
+    using Microsoft.Framework.DependencyInjection.Extensions;
 
     public class Startup
     {
-        // For more information on how to configure your application, visit http://go.microsoft.com/fwlink/?LinkID=398940
-        public void ConfigureServices(IServiceCollection services)
+        public Startup(IHostingEnvironment env, IApplicationEnvironment appEnv)
         {
-            services.AddDataProtection();
+            var builder = new ConfigurationBuilder(appEnv.ApplicationBasePath)
+                .AddJsonFile("config.json")
+                .AddJsonFile($"config.{env.EnvironmentName}.json", optional: true);
 
-            services.AddMvc();
-
-            // I only put this here to keep things simple for people :)
-            services.AddWebApiConventions();
+            this.Configuration = builder.Build();
         }
 
-        public void Configure(IApplicationBuilder app, IApplicationEnvironment env)
+        #region Properties
+
+        public IConfiguration Configuration { get; set; }
+
+        #endregion //Properties
+
+        public void ConfigureServices(IServiceCollection services)
         {
-            var certFile = env.ApplicationBasePath + "\\idsrv3test.pfx";
+            services.AddEntityFramework()
+                .AddSqlServer()
+                .AddDbContext<ApplicationContext>(options =>
+                    options.UseSqlServer(this.Configuration["Data:DefaultConnection:ConnectionString"]));
 
-            var test = Clients.HeaderFormatExample();
+            services.Configure<ContextOptions>(options =>
+           {
+               options.DefaultAdminUserName = this.Configuration["AdminUser:Username"];
+               options.DefaultAdminPassword = this.Configuration["AdminUser:Password"];
+           });
 
-            app.Map("/core", core =>
-            {
-                var factory = InMemoryFactory.Create(Users.Get(), Clients.Get(), Scopes.Get());
-                var loggingOptions = new LoggingOptions();
-                loggingOptions.EnableHttpLogging = true;
-                loggingOptions.IncludeSensitiveDataInLogs = true;
-                LogProvider.SetCurrentLogProvider(new DiagnosticsTraceLogProvider());
+            services.TryAdd(ServiceDescriptor.Scoped<IUserStore<ApplicationUser>, ApplicationUserStore>());
+            services.TryAdd(ServiceDescriptor.Scoped<IRoleStore<ApplicationRole>, ApplicationRoleStore>());
+            services.TryAdd(ServiceDescriptor.Scoped<RoleManager<ApplicationRole>, ApplicationRoleManager>());
 
-                var idsrvOptions = new IdentityServerOptions
-                {
-                    LoggingOptions = loggingOptions,
-                    Factory = factory,
-                    RequireSsl = false,
-                    SigningCertificate = new X509Certificate2(certFile, "idsrv3test"),
-                    CorsPolicy = CorsPolicy.AllowAll
-                };
-                core.UseIdentityServer(idsrvOptions);
-            });
+            services.AddIdentity<ApplicationUser, ApplicationRole>()
+                .AddUserStore<ApplicationUserStore>()
+                .AddRoleStore<ApplicationRoleStore>()
+                .AddRoleManager<ApplicationRoleManager>();
 
+            //OpenIdConnect Server
+            services.AddAuthentication();
+            services.AddCaching();
+
+            services.AddMvc();
+        }
+
+        public void Configure(IApplicationBuilder app, IRuntimeEnvironment env)
+        {
             app.Map("/api", api =>
             {
                 api.UseOAuthBearerAuthentication(options =>
-                    {
-                        options.AutomaticAuthentication = true;
-                        options.Authority = "http://localhost:35718/core/connect/authorize";
-                        options.MetadataAddress = "http://localhost:35718/core/.well-known/openid-configuration";
-                        options.TokenValidationParameters.ValidAudience = "http://localhost:35718/core/resources";
-                    });
+                {
+                    options.AutomaticAuthentication = true;
+                    options.Authority = "http://localhost:35718/";
+                    options.Audience = "http://localhost:35718/";
+                });
 
                 api.UseMvc();
             });
 
+            app.UseOpenIdConnectServer(options =>
+            {
+                options.AuthenticationScheme = OpenIdConnectDefaults.AuthenticationScheme;
+
+                // There's currently a bug in System.IdentityModel.Tokens that prevents using X509 certificates on Mono.
+                // To work around this bug, a new in-memory RSA key is generated each time this app is started.
+                // See https://github.com/AzureAD/azure-activedirectory-identitymodel-extensions-for-dotnet/issues/179
+                if (string.Equals(env.RuntimeType, "Mono", StringComparison.OrdinalIgnoreCase))
+                {
+                    var rsaCryptoServiceProvider = new RSACryptoServiceProvider(2048);
+                    var rsaParameters = rsaCryptoServiceProvider.ExportParameters(true);
+
+                    options.UseKey(new RsaSecurityKey(rsaParameters));
+                }
+                else
+                {
+                    options.UseCertificate(typeof(Startup).GetTypeInfo().Assembly, "AureliaDemo.Certificate.pfx", "Owin.Security.OpenIdConnect.Server");
+                }
+
+                options.ApplicationCanDisplayErrors = true;
+                options.AllowInsecureHttp = true;
+                options.Issuer = new Uri("http://localhost:35718/");
+                options.AuthorizationEndpointPath = PathString.Empty;
+
+                options.Provider = new AuthorizationProvider();
+            });
+
+            app.UseDefaultFiles();
             app.UseStaticFiles();
-            app.UseErrorPage(ErrorPageOptions.ShowAll);
+
+            ApplicationDbOperations.InitializeIdentityDbAsync(app.ApplicationServices).Wait();
         }
     }
 }

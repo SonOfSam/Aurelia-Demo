@@ -1,27 +1,34 @@
-﻿{
+{
   "webroot": "wwwroot",
   "version": "1.0.0-*",
+  "resource": [ "Certificate.pfx" ],
 
   "dependencies": {
-    "Microsoft.AspNet.Server.IIS": "1.0.0-beta5",
-    "Microsoft.AspNet.Server.WebListener": "1.0.0-beta5",
-    "Microsoft.AspNet.StaticFiles": "1.0.0-beta5",
-    "Microsoft.AspNet.Diagnostics": "1.0.0-beta5",
-    "Thinktecture.IdentityServer3": "1.6.2",
-    "Microsoft.AspNet.DataProtection": "1.0.0-beta5",
-    "Microsoft.AspNet.Owin": "1.0.0-beta5",
-    "Microsoft.Owin": "3.0.1",
-    "Microsoft.AspNet.Mvc": "6.0.0-beta5",
-    "Microsoft.AspNet.Authentication.OAuthBearer": "1.0.0-beta5",
-    "Microsoft.AspNet.Mvc.WebApiCompatShim": "6.0.0-beta5"
+    "Microsoft.AspNet.Server.IIS": "1.0.0-beta7",
+    "Microsoft.AspNet.Server.WebListener": "1.0.0-beta7",
+    "Microsoft.AspNet.StaticFiles": "1.0.0-beta7",
+    "Microsoft.AspNet.Diagnostics": "1.0.0-beta7",
+    "Microsoft.AspNet.DataProtection": "1.0.0-beta7",
+    "Microsoft.AspNet.Server.Kestrel": "1.0.0-beta7",  
+    "Microsoft.AspNet.Mvc": "6.0.0-beta7",
+    "Microsoft.AspNet.Authentication.OAuthBearer": "1.0.0-beta7",
+    "Microsoft.Framework.Configuration.Json": "1.0.0-beta7",
+    "AspNet.Security.OpenIdConnect.Server": "1.0.0-beta2",
+    "EntityFramework.SqlServer": "7.0.0-beta7",
+    "EntityFramework.Commands": "7.0.0-beta7",
+    "Microsoft.AspNet.Identity": "3.0.0-beta7",
+    "Microsoft.AspNet.Identity.EntityFramework": "3.0.0-beta7"
   },
 
   "commands": {
-    "web": "Microsoft.AspNet.Hosting --config hosting.ini"
+    "kestrel": "Microsoft.AspNet.Hosting --server=Microsoft.AspNet.Server.Kestrel --server.urls=http://localhost:35718",
+    "web": "Microsoft.AspNet.Hosting server=Microsoft.AspNet.Server.WebListener server.urls=http://localhost:35718",
+    "ef": "EntityFramework.Commands"
   },
 
   "frameworks": {
-    "dnx451": { }
+    "dnx451": { },
+    "dnxcore50": { }
   },
 
   "publishExclude": [

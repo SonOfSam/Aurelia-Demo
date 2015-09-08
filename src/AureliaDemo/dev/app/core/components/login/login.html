@@ -1,0 +1,29 @@
+﻿<template>
+    <div id="bg">
+        <img src="/images/loginBackground.png" alt="">
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="loginBox">
+                <div class="panel-body">
+                    <img src="/images/tinyLogo.png"/>
+
+                    <form method="post" name="loginForm">
+                        <div class="form-group">
+                            <input class="form-control input-lg" type="text" name="username" value.bind="username" placeholder="Username" required>
+                        </div>
+
+                        <div class="form-group">
+                            <input class="form-control input-lg" type="password" name="password" value.bind="password" placeholder="Password" required>
+                        </div>
+
+                        <button type="submit" click.delegate="login()" class="btn btn-lg  btn-block btn-success">Log in</button>
+                        <button type="submit" click.delegate="refresh()" class="btn btn-lg  btn-block btn-success">Refresh</button>
+                        <button type="submit" click.delegate="test1()" class="btn btn-lg  btn-block btn-success">Test 1</button>
+                        <button type="submit" click.delegate="test2()" class="btn btn-lg  btn-block btn-success">Test 2</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>

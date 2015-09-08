@@ -1,0 +1,11 @@
+{
+  "AdminUser": {
+    "Username": "admin",
+    "Password": "Admin123@"
+  },
+  "Data": {
+    "DefaultConnection": {
+      "ConnectionString": "Server=(localdb)\\mssqllocaldb;Database=AureliaDemoDatabase;Trusted_Connection=True;MultipleActiveResultSets=true"
+    }
+  }
+}
