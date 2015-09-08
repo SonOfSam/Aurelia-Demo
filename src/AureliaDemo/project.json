@@ -27,12 +27,7 @@
   },
 
   "frameworks": {
-    "dnx451": {
-      "dependencies": {
-        "Microsoft.AspNet.Owin": "1.0.0-beta7",
-        "Microsoft.Owin": "3.0.1"
-      }
-    },
+    "dnx451": { },
     "dnxcore50": { }
   },
 

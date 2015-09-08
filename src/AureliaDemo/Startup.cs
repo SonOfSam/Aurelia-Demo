@@ -17,6 +17,7 @@
 
     using AureliaDemo.Models;
 
+    using Microsoft.AspNet.Http;
     using Microsoft.Data.Entity;
     using Microsoft.AspNet.Identity;
     using Microsoft.Framework.DependencyInjection.Extensions;
@@ -75,8 +76,7 @@
                 api.UseOAuthBearerAuthentication(options =>
                 {
                     options.AutomaticAuthentication = true;
-                    options.Authority = "http://localhost:35718/core/connect/authorize";
-                    options.MetadataAddress = "http://localhost:35718/.well-known/openid-configuration";
+                    options.Authority = "http://localhost:35718/";
                 });
 
                 api.UseMvc();
@@ -104,7 +104,7 @@
                 options.ApplicationCanDisplayErrors = true;
                 options.AllowInsecureHttp = true;
                 options.Issuer = new Uri("http://localhost:35718/");
-                options.AuthorizationEndpointPath = "/core/connect/authorize";
+                options.AuthorizationEndpointPath = PathString.Empty;
 
                 options.Provider = new AuthorizationProvider();
             });
