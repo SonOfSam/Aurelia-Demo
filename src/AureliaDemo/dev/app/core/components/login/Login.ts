@@ -37,16 +37,16 @@ export class Login {
     }
 
     test1() {
-        this.httpClient.createRequest('http://localhost:35718/api/test')
+        (<any>this.httpClient.createRequest('http://localhost:35718/api/test'))
             .withToken()
             .asGet()
             .send().then(result => {
                 console.log(result);
-            });
+            });        
     }
 
     test2() {
-        this.httpClient.createRequest('http://localhost:35718/api/test')
+        (<any>this.httpClient.createRequest('http://localhost:35718/api/test'))
             .asGet()
             .send().then(result => {
                 console.log(result);
