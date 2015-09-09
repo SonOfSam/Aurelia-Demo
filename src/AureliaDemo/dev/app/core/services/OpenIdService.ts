@@ -51,7 +51,7 @@ export class OpenIdService {
         var bodyContent = `${grantContent}${userNameContent}${passwordContent}${scopeContent}${resourceContent}`;
 
         promise = new Promise<AccessTokenRequestResult>((resolve, reject) => {
-            this.httpClient.createRequest(this.serverConfiguration.token_endpoint)
+            (<any>this.httpClient.createRequest(this.serverConfiguration.token_endpoint))
                 .withHeader('Content-Type', 'application/x-www-form-urlencoded')
                 .asPost()
                 .withContent(bodyContent)
@@ -95,7 +95,7 @@ export class OpenIdService {
                 var tokenContent = `${"&refresh_token="}${token}`;
                 var bodyContent = `${grantContent}${tokenContent}`;
 
-                this.httpClient.createRequest(this.serverConfiguration.token_endpoint)
+                (<any>this.httpClient.createRequest(this.serverConfiguration.token_endpoint))
                     .withHeader('Content-Type', 'application/x-www-form-urlencoded')
                     .asPost()
                     .withContent(bodyContent)

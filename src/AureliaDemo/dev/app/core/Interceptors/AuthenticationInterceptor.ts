@@ -42,7 +42,7 @@ export class AuthenticationInterceptor {
     retryHttpRequest(requestMessage, defer) : void {
         console.log('retyHttpRequest => requestMessage', requestMessage);
 
-        this.httpClient.send(RequestMessage, null).then(response => {
+        this.httpClient.send(requestMessage, null).then(response => {
             defer.resolve(response);
         }).catch(error => {
             defer.reject(error);

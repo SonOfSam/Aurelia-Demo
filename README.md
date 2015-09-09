@@ -7,7 +7,8 @@ Aurelia Demo using TypeScript via gulp
 The last focus was on getting the backend equipped with an OpenId server, which would be used for authentication. I have also added the basic authentication related code in the web client that can at this point, login, and logout, request a token and refresh a token. There is also code that enables a simplified way of adding a token to outgoing requests, finally there is an interceptor that will attempt to silently refresh an expired token. To help showcase these in action, currently on the login page, there are various buttons that just call methods in the view model, that either logs in, make an authenticated request to the server, make an un-authenticated request and a method that will request that a given token is refreshed.
 
 ### Next Steps
-1. Update to Latest Aurelia bits.
+1. ``Update to Latest Aurelia bits.``
+2. Create menu with combination of Bootstrap & Materials.
 
 ### Project Intent
 We intend on implementing an order entry system in the project, so that more features of the various frameworks on both the server and client can be exposed. Ideally the project would closely resemble a real world application so that it may be used as reference to the various framework communities. 
