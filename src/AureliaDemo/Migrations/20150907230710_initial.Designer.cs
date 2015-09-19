@@ -2,20 +2,15 @@ using System;
 using Microsoft.Data.Entity;
 using Microsoft.Data.Entity.Infrastructure;
 using Microsoft.Data.Entity.Metadata;
-using Microsoft.Data.Entity.Migrations;
 using AureliaDemo.Models;
-using Microsoft.Data.Entity.SqlServer.Metadata;
+using Microsoft.Data.Entity.Migrations;
 
 namespace AureliaDemo.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
+    [Migration("20150907230710_initial")]
     partial class initial
     {
-        public override string Id
-        {
-            get { return "20150907230710_initial"; }
-        }
-
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder

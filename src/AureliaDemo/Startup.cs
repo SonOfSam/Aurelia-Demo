@@ -1,8 +1,6 @@
 ﻿namespace AureliaDemo
 {
     using System;
-    using System.IdentityModel.Tokens;
-    using System.Security.Cryptography;
 
     using AspNet.Security.OpenIdConnect.Server;
 
@@ -13,7 +11,6 @@
     using Microsoft.Dnx.Runtime;
     using Microsoft.Framework.Configuration;
     using Microsoft.Framework.DependencyInjection;
-    using System.Reflection;
 
     using AureliaDemo.Models;
 
@@ -72,7 +69,7 @@
         {
             app.Map("/api", api =>
             {
-                api.UseOAuthBearerAuthentication(options =>
+                api.UseJwtBearerAuthentication(options =>
                 {
                     options.AutomaticAuthentication = true;
                     options.Authority = "http://localhost:35718/";
@@ -84,26 +81,7 @@
 
             app.UseOpenIdConnectServer(options =>
             {
-                options.AuthenticationScheme = OpenIdConnectDefaults.AuthenticationScheme;
-
-                // There's currently a bug in System.IdentityModel.Tokens that prevents using X509 certificates on Mono.
-                // To work around this bug, a new in-memory RSA key is generated each time this app is started.
-                // See https://github.com/AzureAD/azure-activedirectory-identitymodel-extensions-for-dotnet/issues/179
-                if (string.Equals(env.RuntimeType, "Mono", StringComparison.OrdinalIgnoreCase))
-                {
-                    var rsaCryptoServiceProvider = new RSACryptoServiceProvider(2048);
-                    var rsaParameters = rsaCryptoServiceProvider.ExportParameters(true);
-
-                    options.UseKey(new RsaSecurityKey(rsaParameters));
-                }
-                else
-                {
-                    options.UseCertificate(typeof(Startup).GetTypeInfo().Assembly, "AureliaDemo.Certificate.pfx", "Owin.Security.OpenIdConnect.Server");
-                }
-
-                options.ApplicationCanDisplayErrors = true;
                 options.AllowInsecureHttp = true;
-                options.Issuer = new Uri("http://localhost:35718/");
                 options.AuthorizationEndpointPath = PathString.Empty;
 
                 options.Provider = new AuthorizationProvider();

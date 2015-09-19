@@ -32,7 +32,7 @@ namespace AureliaDemo.Models
 
         private static async Task CreateAdminUser(IServiceProvider serviceProvider)
         {
-            var options = serviceProvider.GetRequiredService<IOptions<ContextOptions>>().Options;
+            var options = serviceProvider.GetRequiredService<IOptions<ContextOptions>>().Value;
             var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
             var roleManager = serviceProvider.GetRequiredService<RoleManager<ApplicationRole>>();
 

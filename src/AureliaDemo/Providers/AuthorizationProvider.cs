@@ -13,12 +13,12 @@
 
     public sealed class AuthorizationProvider : OpenIdConnectServerProvider
     {
-        public async override Task GrantResourceOwnerCredentials(GrantResourceOwnerCredentialsNotification notification)
+        public async override Task GrantResourceOwnerCredentials(GrantResourceOwnerCredentialsContext context)
         {
-            var username = notification.UserName;
-            var password = notification.Password;
+            var username = context.UserName;
+            var password = context.Password;
 
-            var userManager = notification
+            var userManager = context
                 .HttpContext
                 .RequestServices
                 .GetRequiredService<UserManager<ApplicationUser>>();
@@ -28,7 +28,7 @@
 
             if (isValid)
             {
-                var identity = new ClaimsIdentity(OpenIdConnectDefaults.AuthenticationScheme);
+                var identity = new ClaimsIdentity(OpenIdConnectServerDefaults.AuthenticationScheme);
 
                 // this automatically goes into the token and id_token
                 identity.AddClaim(ClaimTypes.NameIdentifier, user.UserName);
@@ -38,30 +38,25 @@
                 identity.AddClaim(ClaimTypes.Surname, user.LastName, "token id_token");
 
                 var principal = new ClaimsPrincipal(identity);
-                notification.Validated(principal);
+                context.Validated(principal);
             }
         }
 
-        public override Task ValidateClientAuthentication(ValidateClientAuthenticationNotification notification)
+        public override Task ValidateClientAuthentication(ValidateClientAuthenticationContext context)
         {
-            notification.ClientId = string.Empty;
-            notification.Validated();
+            context.Skipped();
             return Task.FromResult<object>(null);
         }
 
-        public override Task ValidateTokenRequest(ValidateTokenRequestNotification notification)
+        public override Task ValidateTokenRequest(ValidateTokenRequestContext context)
         {
-            if (notification.Request.IsPasswordGrantType() || notification.Request.IsRefreshTokenGrantType())
+            if (!context.Request.IsPasswordGrantType() && !context.Request.IsRefreshTokenGrantType())
             {
-                notification.Validated();
-
-                return Task.FromResult<object>(null);
-            }
-
-            notification.Rejected(
+                context.Rejected(
                 error: "unsupported_grant_type",
                 description: "Only authorization code and refresh token grant types " +
                              "are accepted by this authorization server");
+            }
 
             return Task.FromResult<object>(null);
         }

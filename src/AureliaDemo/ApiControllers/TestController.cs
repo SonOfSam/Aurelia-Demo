@@ -1,7 +1,8 @@
 ﻿namespace AureliaDemo.ApiControllers
-{    
+{
     using Microsoft.AspNet.Authorization;
     using Microsoft.AspNet.Mvc;
+    using Microsoft.AspNet.Mvc.ActionResults;
 
     [Authorize]
     [Route("[controller]")]
