@@ -171,6 +171,8 @@ ClientBin/
 *.dbproj.schemaview
 *.publishsettings
 node_modules/
+jspm_packages/
+wwwroot/
 orleans.codegen.cs
 
 # RIA/Silverlight projects
