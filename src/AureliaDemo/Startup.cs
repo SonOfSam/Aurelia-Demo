@@ -18,6 +18,7 @@
     using Microsoft.Data.Entity;
     using Microsoft.AspNet.Identity;
     using Microsoft.Framework.DependencyInjection.Extensions;
+    using Microsoft.Framework.Logging;
 
     public class Startup
     {
@@ -65,8 +66,10 @@
             services.AddMvc();
         }
 
-        public void Configure(IApplicationBuilder app, IRuntimeEnvironment env)
+        public void Configure(IApplicationBuilder app, IRuntimeEnvironment env, ILoggerFactory factory)
         {
+            factory.AddConsole();
+
             app.Map("/api", api =>
             {
                 api.UseJwtBearerAuthentication(options =>
