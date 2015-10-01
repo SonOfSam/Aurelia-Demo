@@ -19,6 +19,8 @@
     using Microsoft.AspNet.Identity;
     using Microsoft.Framework.DependencyInjection.Extensions;
     using Microsoft.Framework.Logging;
+    using Microsoft.IdentityModel.Protocols;
+    using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 
     public class Startup
     {
@@ -78,6 +80,14 @@
                     options.AutomaticAuthentication = true;
                     options.Authority = "http://localhost:35718/";
                     options.Audience = "http://localhost:35718/";
+
+                    // Note: by default, IdentityModel beta8 now refuses to initiate non-HTTPS calls.
+                    // To work around this limitation, the configuration manager is manually
+                    // instantiated with a document retriever allowing HTTP calls.
+                    options.ConfigurationManager = new ConfigurationManager<OpenIdConnectConfiguration>(
+                        metadataAddress: options.Authority + ".well-known/openid-configuration",
+                        configRetriever: new OpenIdConnectConfigurationRetriever(),
+                        docRetriever: new HttpDocumentRetriever { RequireHttps = options.Authority.StartsWith("https", StringComparison.OrdinalIgnoreCase) });
                 });
 
                 api.UseMvc();
