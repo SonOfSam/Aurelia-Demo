@@ -24,7 +24,8 @@
     {
         public Startup(IHostingEnvironment env, IApplicationEnvironment appEnv)
         {
-            var builder = new ConfigurationBuilder(appEnv.ApplicationBasePath)
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(appEnv.ApplicationBasePath)
                 .AddJsonFile("config.json")
                 .AddJsonFile($"config.{env.EnvironmentName}.json", optional: true);
 
@@ -82,12 +83,12 @@
                 api.UseMvc();
             });
 
-            app.UseOpenIdConnectServer(options =>
+            app.UseOpenIdConnectServer(configuration =>
             {
-                options.AllowInsecureHttp = true;
-                options.AuthorizationEndpointPath = PathString.Empty;
+                configuration.Options.AllowInsecureHttp = true;
+                configuration.Options.AuthorizationEndpointPath = PathString.Empty;
 
-                options.Provider = new AuthorizationProvider();
+                configuration.Provider = new AuthorizationProvider();
             });
 
             app.UseDefaultFiles();
